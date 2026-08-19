@@ -1,27 +1,1748 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b3b66"><link rel="stylesheet" href="../css/cm.css"><link rel="stylesheet" href="../css/auth.css"><title>Sign In — CM | BIZODIT</title></head>
-<body><main class="auth-page"><section class="auth-card"><div class="auth-logo">CM</div><div class="auth-title">Welcome back</div><div class="auth-subtitle">Sign in to CM | BIZODIT</div>
-<form id="signInForm"><div class="auth-field"><label>Email</label><input id="email" type="email" autocomplete="username" required placeholder="Enter email"></div><div class="auth-field"><label>Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Enter password"></div><button class="auth-submit" type="submit">Sign In</button><div class="auth-message" id="message"></div></form><div class="auth-footer">Authorized users only • CM | BIZODIT</div></section></main>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-<script type="module">
-import {firebaseConfig} from "../js/firebase-config.js";
-const msg=document.getElementById("message");
-if(Object.values(firebaseConfig).some(v=>String(v).includes("YOUR_"))){msg.textContent="Configure js/firebase-config.js before signing in.";msg.style.color="#b42318";}
-else{
- firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
- document.getElementById("signInForm").addEventListener("submit",async e=>{
-  e.preventDefault();msg.textContent="Signing in...";msg.style.color="#687583";
-  try{
-   const c=await auth.signInWithEmailAndPassword(email.value.trim(),password.value);
-   const snap=await db.collection("users").doc(c.user.uid).get();
-   if(!snap.exists)throw new Error("User profile not found.");
-   const u=snap.data();
-   if(u.status!=="active")throw new Error("Your account is inactive.");
-   if(!["admin","user"].includes(u.role))throw new Error("Invalid user role.");
-   if(u.role==="user"&&!u.branchId)throw new Error("No branch is assigned.");
-   sessionStorage.setItem("cmBizoditUser",JSON.stringify({uid:c.user.uid,email:c.user.email,...u}));
-   location.href="../index.html";
-  }catch(err){msg.textContent=err.message||"Unable to sign in.";msg.style.color="#b42318";}
- });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#0b3b66">
+
+<title>CM | BIZODIT — Login</title>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+
+<style>
+
+/* =========================================================
+   CM | BIZODIT
+   CORPORATE LOGIN
+========================================================= */
+
+:root{
+    --primary:#0b3b66;
+    --primary-dark:#082d4e;
+    --background:#f4f6f8;
+    --card:#ffffff;
+    --text:#202b36;
+    --muted:#687583;
+    --border:#d8dee5;
+    --border-dark:#c6ced6;
+    --soft:#edf1f4;
+    --success:#147a4b;
+    --danger:#b42318;
 }
-</script></body></html>
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    min-height:100%;
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+    background:var(--background);
+    color:var(--text);
+}
+
+button,
+input{
+    font-family:inherit;
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.login-page{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.login-card{
+    width:100%;
+    max-width:420px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:32px;
+    box-shadow:
+        0 12px 35px
+        rgba(11,59,102,.06);
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:30px;
+}
+
+.brand-logo{
+    width:48px;
+    height:48px;
+    flex:0 0 48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background:var(--primary);
+    color:#fff;
+    font-size:17px;
+    font-weight:700;
+}
+
+.brand-name{
+    font-size:16px;
+    font-weight:700;
+}
+
+.brand-subtitle{
+    margin-top:3px;
+    font-size:10px;
+    color:var(--muted);
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.login-heading{
+    margin-bottom:24px;
+}
+
+.login-heading h1{
+    margin:0;
+    font-size:23px;
+    font-weight:700;
+    letter-spacing:-.4px;
+}
+
+.login-heading p{
+    margin:7px 0 0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-group{
+    margin-bottom:17px;
+}
+
+.form-label{
+    display:block;
+    margin-bottom:7px;
+    font-size:11px;
+    font-weight:700;
+}
+
+.input-wrap{
+    position:relative;
+    width:100%;
+}
+
+.input-icon{
+    position:absolute;
+    left:13px;
+    top:50%;
+    transform:translateY(-50%);
+    width:17px;
+    height:17px;
+    color:var(--muted);
+    pointer-events:none;
+}
+
+.form-input{
+    width:100%;
+    height:46px;
+    padding:0 44px 0 42px;
+    border:1px solid var(--border-dark);
+    border-radius:7px;
+    outline:none;
+    background:#fff;
+    color:var(--text);
+    font-size:12px;
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+.form-input::placeholder{
+    color:#9aa4ae;
+}
+
+.form-input:focus{
+    border-color:var(--primary);
+    box-shadow:
+        0 0 0 3px
+        rgba(11,59,102,.08);
+}
+
+
+/* =========================================================
+   PASSWORD
+========================================================= */
+
+.password-toggle{
+    position:absolute;
+    right:7px;
+    top:50%;
+    transform:translateY(-50%);
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    cursor:pointer;
+    border-radius:6px;
+}
+
+.password-toggle:hover{
+    background:var(--soft);
+    color:var(--primary);
+}
+
+
+/* =========================================================
+   OPTIONS
+========================================================= */
+
+.login-options{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:2px 0 20px;
+}
+
+.remember{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--muted);
+    font-size:10px;
+    cursor:pointer;
+}
+
+.remember input{
+    width:13px;
+    height:13px;
+    margin:0;
+    accent-color:var(--primary);
+}
+
+.forgot-password{
+    border:0;
+    padding:0;
+    background:transparent;
+    color:var(--primary);
+    font-size:10px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.forgot-password:hover{
+    text-decoration:underline;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.sign-in-btn,
+.signup-btn{
+    width:100%;
+    height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border-radius:7px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.sign-in-btn{
+    border:0;
+    background:var(--primary);
+    color:#fff;
+}
+
+.sign-in-btn:hover{
+    background:var(--primary-dark);
+}
+
+.signup-btn{
+    height:43px;
+    border:1px solid var(--primary);
+    background:#fff;
+    color:var(--primary);
+}
+
+.signup-btn:hover{
+    background:var(--soft);
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.divider{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:24px 0;
+    color:#9aa4ae;
+    font-size:9px;
+}
+
+.divider::before,
+.divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--border);
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message{
+    min-height:18px;
+    margin-top:12px;
+    text-align:center;
+    font-size:10px;
+    color:var(--muted);
+}
+
+.message.error{
+    color:var(--danger);
+}
+
+.message.success{
+    color:var(--success);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.login-footer{
+    margin-top:27px;
+    padding-top:17px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    color:#8a95a3;
+    font-size:9px;
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(20,30,40,.28);
+    z-index:5000;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-card{
+    width:100%;
+    max-width:390px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:24px;
+    box-shadow:
+        0 18px 50px
+        rgba(0,0,0,.12);
+}
+
+.modal-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.modal-title{
+    font-size:17px;
+    font-weight:700;
+}
+
+.modal-description{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:10px;
+    line-height:1.5;
+}
+
+.modal-close{
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:0;
+    border-radius:6px;
+    background:var(--soft);
+    color:var(--muted);
+    cursor:pointer;
+}
+
+.modal-body{
+    margin-top:20px;
+}
+
+.modal-actions{
+    display:flex;
+    gap:8px;
+    margin-top:15px;
+}
+
+.modal-btn{
+    flex:1;
+    height:42px;
+    border-radius:7px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.modal-cancel{
+    border:1px solid var(--border);
+    background:#fff;
+}
+
+.modal-submit{
+    border:0;
+    background:var(--primary);
+    color:#fff;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:520px){
+
+    .login-page{
+        padding:14px;
+    }
+
+    .login-card{
+        padding:25px 20px;
+    }
+
+    .brand{
+        margin-bottom:25px;
+    }
+
+    .brand-logo{
+        width:44px;
+        height:44px;
+        flex-basis:44px;
+        font-size:15px;
+    }
+
+    .brand-name{
+        font-size:15px;
+    }
+
+    .login-heading h1{
+        font-size:21px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-page">
+
+<div class="login-card">
+
+
+<!-- =====================================================
+     BRAND
+===================================================== -->
+
+<div class="brand">
+
+    <div class="brand-logo">
+        CM
+    </div>
+
+    <div>
+
+        <div class="brand-name">
+            CM | BIZODIT
+        </div>
+
+        <div class="brand-subtitle">
+            Business Management Platform
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LOGIN HEADING
+===================================================== -->
+
+<div class="login-heading">
+
+    <h1>
+        Welcome back
+    </h1>
+
+    <p>
+        Sign in to continue to your business dashboard.
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     LOGIN FORM
+===================================================== -->
+
+<form id="loginForm">
+
+
+<div class="form-group">
+
+<label
+    class="form-label"
+    for="loginEmail">
+
+    Email address
+
+</label>
+
+<div class="input-wrap">
+
+<i
+    class="input-icon"
+    data-lucide="mail">
+</i>
+
+<input
+    class="form-input"
+    id="loginEmail"
+    type="email"
+    placeholder="Enter your email"
+    autocomplete="email"
+    required
+>
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label
+    class="form-label"
+    for="loginPassword">
+
+    Password
+
+</label>
+
+<div class="input-wrap">
+
+<i
+    class="input-icon"
+    data-lucide="lock-keyhole">
+</i>
+
+<input
+    class="form-input"
+    id="loginPassword"
+    type="password"
+    placeholder="Enter your password"
+    autocomplete="current-password"
+    required
+>
+
+<button
+    type="button"
+    class="password-toggle"
+    id="loginPasswordToggle">
+
+<i data-lucide="eye"></i>
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="login-options">
+
+<label class="remember">
+
+<input
+    type="checkbox"
+    id="rememberMe"
+>
+
+<span>
+Remember me
+</span>
+
+</label>
+
+
+<button
+    type="button"
+    class="forgot-password"
+    id="forgotButton">
+
+Forgot password?
+
+</button>
+
+</div>
+
+
+<button
+    type="submit"
+    class="sign-in-btn">
+
+<i data-lucide="log-in"></i>
+
+<span>
+Sign In
+</span>
+
+</button>
+
+
+<div
+    class="message"
+    id="loginMessage">
+</div>
+
+</form>
+
+
+<!-- =====================================================
+     DIVIDER
+===================================================== -->
+
+<div class="divider">
+OR
+</div>
+
+
+<!-- =====================================================
+     SIGN UP
+===================================================== -->
+
+<div style="text-align:center;">
+
+<div
+    style="
+        color:#687583;
+        font-size:11px;
+        margin-bottom:10px;
+    ">
+
+Don't have an account?
+
+</div>
+
+
+<button
+    type="button"
+    class="signup-btn"
+    id="signupButton">
+
+<i data-lucide="user-plus"></i>
+
+Create an Account
+
+</button>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<div class="login-footer">
+
+<strong>
+CM | BIZODIT
+</strong>
+
+<br>
+
+Secure Business Management Platform
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     SIGN UP MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="signupModal">
+
+<div class="modal-card">
+
+
+<div class="modal-header">
+
+<div>
+
+<div class="modal-title">
+Create Account
+</div>
+
+<div class="modal-description">
+Create your CM | BIZODIT account.
+</div>
+
+</div>
+
+
+<button
+    type="button"
+    class="modal-close"
+    id="closeSignup">
+
+<i data-lucide="x"></i>
+
+</button>
+
+</div>
+
+
+<div class="modal-body">
+
+
+<form id="signupForm">
+
+
+<div class="form-group">
+
+<label
+    class="form-label"
+    for="signupName">
+
+Full name
+
+</label>
+
+<div class="input-wrap">
+
+<i
+    class="input-icon"
+    data-lucide="user">
+</i>
+
+<input
+    class="form-input"
+    id="signupName"
+    type="text"
+    placeholder="Enter your name"
+    required
+>
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label
+    class="form-label"
+    for="signupMobile">
+
+Mobile number
+
+</label>
+
+<div class="input-wrap">
+
+<i
+    class="input-icon"
+    data-lucide="phone">
+</i>
+
+<input
+    class="form-input"
+    id="signupMobile"
+    type="tel"
+    placeholder="Enter mobile number"
+    required
+>
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label
+    class="form-label"
+    for="signupEmail">
+
+Email address
+
+</label>
+
+<div class="input-wrap">
+
+<i
+    class="input-icon"
+    data-lucide="mail">
+</i>
+
+<input
+    class="form-input"
+    id="signupEmail"
+    type="email"
+    placeholder="Enter email"
+    required
+>
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label
+    class="form-label"
+    for="signupPassword">
+
+Password
+
+</label>
+
+<div class="input-wrap">
+
+<i
+    class="input-icon"
+    data-lucide="lock-keyhole">
+</i>
+
+<input
+    class="form-input"
+    id="signupPassword"
+    type="password"
+    placeholder="Create password"
+    minlength="6"
+    required
+>
+
+<button
+    type="button"
+    class="password-toggle"
+    id="signupPasswordToggle">
+
+<i data-lucide="eye"></i>
+
+</button>
+
+</div>
+
+</div>
+
+
+<div
+    class="message"
+    id="signupMessage">
+</div>
+
+
+<div class="modal-actions">
+
+<button
+    type="button"
+    class="modal-btn modal-cancel"
+    id="cancelSignup">
+
+Cancel
+
+</button>
+
+
+<button
+    type="submit"
+    class="modal-btn modal-submit"
+    id="createAccountButton">
+
+Create Account
+
+</button>
+
+</div>
+
+
+</form>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     FORGOT PASSWORD MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="forgotModal">
+
+<div class="modal-card">
+
+
+<div class="modal-header">
+
+<div>
+
+<div class="modal-title">
+Reset Password
+</div>
+
+<div class="modal-description">
+
+Enter your registered email address.
+Password reset will be connected later.
+
+</div>
+
+</div>
+
+
+<button
+    type="button"
+    class="modal-close"
+    id="closeForgot">
+
+<i data-lucide="x"></i>
+
+</button>
+
+</div>
+
+
+<div class="modal-body">
+
+
+<div class="form-group">
+
+<label
+    class="form-label"
+    for="resetEmail">
+
+Email address
+
+</label>
+
+<div class="input-wrap">
+
+<i
+    class="input-icon"
+    data-lucide="mail">
+</i>
+
+<input
+    class="form-input"
+    id="resetEmail"
+    type="email"
+    placeholder="Enter your email"
+>
+
+</div>
+
+</div>
+
+
+<div
+    class="message"
+    id="resetMessage">
+</div>
+
+
+<div class="modal-actions">
+
+<button
+    type="button"
+    class="modal-btn modal-cancel"
+    id="cancelForgot">
+
+Cancel
+
+</button>
+
+
+<button
+    type="button"
+    class="modal-btn modal-submit"
+    id="resetButton">
+
+Send Reset Link
+
+</button>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
+
+/*
+ IMPORTANT:
+
+ Replace these values with the Firebase Web App
+ configuration from your Firebase project.
+
+ These are Web App API configuration values.
+ Do NOT put Firebase Admin SDK private keys here.
+*/
+
+const firebaseConfig = {
+
+    apiKey:
+        "YOUR_FIREBASE_API_KEY",
+
+    authDomain:
+        "YOUR_PROJECT.firebaseapp.com",
+
+    projectId:
+        "YOUR_PROJECT_ID",
+
+    storageBucket:
+        "YOUR_PROJECT.firebasestorage.app",
+
+    messagingSenderId:
+        "YOUR_MESSAGING_SENDER_ID",
+
+    appId:
+        "YOUR_FIREBASE_APP_ID"
+
+};
+
+
+/* =========================================================
+   FIREBASE INITIALIZATION
+========================================================= */
+
+let firebaseReady = false;
+
+try {
+
+    if (
+        !firebase.apps.length
+    ) {
+
+        firebase.initializeApp(
+            firebaseConfig
+        );
+
+    }
+
+    firebaseReady = true;
+
+}
+catch(error){
+
+    console.error(
+        "Firebase initialization failed:",
+        error
+    );
+
+}
+
+
+/* =========================================================
+   LUCIDE
+========================================================= */
+
+lucide.createIcons();
+
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+function setupPasswordToggle(
+    inputId,
+    buttonId
+){
+
+    const input =
+        document.getElementById(inputId);
+
+    const button =
+        document.getElementById(buttonId);
+
+
+    button.addEventListener(
+        "click",
+        function(){
+
+            const hidden =
+                input.type === "password";
+
+
+            input.type =
+                hidden
+                    ? "text"
+                    : "password";
+
+
+            button.innerHTML =
+                hidden
+                    ? '<i data-lucide="eye-off"></i>'
+                    : '<i data-lucide="eye"></i>';
+
+
+            lucide.createIcons();
+
+        }
+    );
+
+}
+
+
+setupPasswordToggle(
+    "loginPassword",
+    "loginPasswordToggle"
+);
+
+
+setupPasswordToggle(
+    "signupPassword",
+    "signupPasswordToggle"
+);
+
+
+/* =========================================================
+   MODAL HELPERS
+========================================================= */
+
+function openModal(id){
+
+    document
+        .getElementById(id)
+        .classList.add("show");
+
+}
+
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   SIGNUP MODAL
+========================================================= */
+
+document
+    .getElementById("signupButton")
+    .addEventListener(
+        "click",
+        function(){
+
+            openModal(
+                "signupModal"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("closeSignup")
+    .addEventListener(
+        "click",
+        function(){
+
+            closeModal(
+                "signupModal"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("cancelSignup")
+    .addEventListener(
+        "click",
+        function(){
+
+            closeModal(
+                "signupModal"
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   SIGNUP — FIREBASE
+========================================================= */
+
+document
+    .getElementById("signupForm")
+    .addEventListener(
+        "submit",
+        async function(event){
+
+            event.preventDefault();
+
+
+            const name =
+                document
+                    .getElementById("signupName")
+                    .value
+                    .trim();
+
+
+            const mobile =
+                document
+                    .getElementById("signupMobile")
+                    .value
+                    .trim();
+
+
+            const email =
+                document
+                    .getElementById("signupEmail")
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById("signupPassword")
+                    .value;
+
+
+            const message =
+                document.getElementById(
+                    "signupMessage"
+                );
+
+
+            const createButton =
+                document.getElementById(
+                    "createAccountButton"
+                );
+
+
+            if (!firebaseReady){
+
+                message.textContent =
+                    "Firebase is not configured.";
+
+                message.className =
+                    "message error";
+
+                return;
+
+            }
+
+
+            if (
+                !name ||
+                !mobile ||
+                !email ||
+                !password
+            ){
+
+                message.textContent =
+                    "Please complete all fields.";
+
+                message.className =
+                    "message error";
+
+                return;
+
+            }
+
+
+            if (password.length < 6){
+
+                message.textContent =
+                    "Password must contain at least 6 characters.";
+
+                message.className =
+                    "message error";
+
+                return;
+
+            }
+
+
+            createButton.disabled =
+                true;
+
+            createButton.textContent =
+                "Creating...";
+
+
+            try {
+
+
+                /* -----------------------------------------
+                   FIREBASE AUTHENTICATION
+
+                   Password is stored securely by Firebase.
+                   It is NOT saved in Firestore.
+                ----------------------------------------- */
+
+                const credential =
+                    await firebase
+                        .auth()
+                        .createUserWithEmailAndPassword(
+                            email,
+                            password
+                        );
+
+
+                const firebaseUser =
+                    credential.user;
+
+
+                /* -----------------------------------------
+                   FIRESTORE USER PROFILE
+                ----------------------------------------- */
+
+                await firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(firebaseUser.uid)
+                    .set({
+
+                        uid:
+                            firebaseUser.uid,
+
+                        name:
+                            name,
+
+                        email:
+                            email,
+
+                        mobile:
+                            mobile,
+
+                        status:
+                            "active",
+
+                        createdAt:
+                            firebase.firestore
+                                .FieldValue
+                                .serverTimestamp()
+
+                    });
+
+
+                /* -----------------------------------------
+                   SUCCESS
+                ----------------------------------------- */
+
+                message.textContent =
+                    "Account created successfully.";
+
+                message.className =
+                    "message success";
+
+
+                createButton.textContent =
+                    "Created";
+
+
+                setTimeout(
+                    function(){
+
+                        closeModal(
+                            "signupModal"
+                        );
+
+
+                        document
+                            .getElementById(
+                                "loginEmail"
+                            )
+                            .value =
+                            email;
+
+
+                        document
+                            .getElementById(
+                                "loginMessage"
+                            )
+                            .textContent =
+                            "Account created. You can sign in when authentication is enabled.";
+
+                        document
+                            .getElementById(
+                                "loginMessage"
+                            )
+                            .className =
+                            "message success";
+
+
+                    },
+                    900
+                );
+
+
+            }
+            catch(error){
+
+                console.error(
+                    error
+                );
+
+
+                let text =
+                    "Unable to create account.";
+
+
+                switch(error.code){
+
+                    case
+                    "auth/email-already-in-use":
+
+                        text =
+                            "An account already exists with this email.";
+
+                        break;
+
+
+                    case
+                    "auth/invalid-email":
+
+                        text =
+                            "Please enter a valid email address.";
+
+                        break;
+
+
+                    case
+                    "auth/weak-password":
+
+                        text =
+                            "Please choose a stronger password.";
+
+                        break;
+
+
+                    case
+                    "auth/network-request-failed":
+
+                        text =
+                            "Network connection failed.";
+
+                        break;
+
+
+                    default:
+
+                        text =
+                            error.message ||
+                            text;
+
+                }
+
+
+                message.textContent =
+                    text;
+
+                message.className =
+                    "message error";
+
+
+                createButton.disabled =
+                    false;
+
+                createButton.textContent =
+                    "Create Account";
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   SIGN IN — UI ONLY
+========================================================= */
+
+document
+    .getElementById("loginForm")
+    .addEventListener(
+        "submit",
+        function(event){
+
+            event.preventDefault();
+
+
+            const message =
+                document.getElementById(
+                    "loginMessage"
+                );
+
+
+            message.textContent =
+                "Sign in will be connected to Firebase later.";
+
+            message.className =
+                "message";
+
+
+        }
+    );
+
+
+/* =========================================================
+   FORGOT PASSWORD
+========================================================= */
+
+document
+    .getElementById("forgotButton")
+    .addEventListener(
+        "click",
+        function(){
+
+            openModal(
+                "forgotModal"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("closeForgot")
+    .addEventListener(
+        "click",
+        function(){
+
+            closeModal(
+                "forgotModal"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("cancelForgot")
+    .addEventListener(
+        "click",
+        function(){
+
+            closeModal(
+                "forgotModal"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("resetButton")
+    .addEventListener(
+        "click",
+        function(){
+
+            const email =
+                document
+                    .getElementById(
+                        "resetEmail"
+                    )
+                    .value
+                    .trim();
+
+
+            const message =
+                document.getElementById(
+                    "resetMessage"
+                );
+
+
+            if(!email){
+
+                message.textContent =
+                    "Please enter your email address.";
+
+                message.className =
+                    "message error";
+
+                return;
+
+            }
+
+
+            message.textContent =
+                "Password reset will be connected later.";
+
+            message.className =
+                "message";
+
+
+        }
+    );
+
+
+/* =========================================================
+   CLOSE MODALS WHEN CLICKING OUTSIDE
+========================================================= */
+
+document
+    .querySelectorAll(".modal")
+    .forEach(
+        modal => {
+
+            modal.addEventListener(
+                "click",
+                function(event){
+
+                    if(
+                        event.target === modal
+                    ){
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key === "Escape"
+        ){
+
+            document
+                .querySelectorAll(
+                    ".modal.show"
+                )
+                .forEach(
+                    modal =>
+                        modal.classList.remove(
+                            "show"
+                        )
+                );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
