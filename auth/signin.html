@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b3b66"><link rel="stylesheet" href="../css/cm.css"><link rel="stylesheet" href="../css/auth.css"><title>Sign In — CM | BIZODIT</title></head>
+<body><main class="auth-page"><section class="auth-card"><div class="auth-logo">CM</div><div class="auth-title">Welcome back</div><div class="auth-subtitle">Sign in to CM | BIZODIT</div>
+<form id="signInForm"><div class="auth-field"><label>Email</label><input id="email" type="email" autocomplete="username" required placeholder="Enter email"></div><div class="auth-field"><label>Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Enter password"></div><button class="auth-submit" type="submit">Sign In</button><div class="auth-message" id="message"></div></form><div class="auth-footer">Authorized users only • CM | BIZODIT</div></section></main>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script type="module">
+import {firebaseConfig} from "../js/firebase-config.js";
+const msg=document.getElementById("message");
+if(Object.values(firebaseConfig).some(v=>String(v).includes("YOUR_"))){msg.textContent="Configure js/firebase-config.js before signing in.";msg.style.color="#b42318";}
+else{
+ firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
+ document.getElementById("signInForm").addEventListener("submit",async e=>{
+  e.preventDefault();msg.textContent="Signing in...";msg.style.color="#687583";
+  try{
+   const c=await auth.signInWithEmailAndPassword(email.value.trim(),password.value);
+   const snap=await db.collection("users").doc(c.user.uid).get();
+   if(!snap.exists)throw new Error("User profile not found.");
+   const u=snap.data();
+   if(u.status!=="active")throw new Error("Your account is inactive.");
+   if(!["admin","user"].includes(u.role))throw new Error("Invalid user role.");
+   if(u.role==="user"&&!u.branchId)throw new Error("No branch is assigned.");
+   sessionStorage.setItem("cmBizoditUser",JSON.stringify({uid:c.user.uid,email:c.user.email,...u}));
+   location.href="../index.html";
+  }catch(err){msg.textContent=err.message||"Unable to sign in.";msg.style.color="#b42318";}
+ });
+}
+</script></body></html>
