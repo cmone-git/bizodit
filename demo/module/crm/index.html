@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f6f8">
+<title>BizOdit — CRM</title>
+<style>
+:root{--brand:#0b3b66;--soft:#e8f1f7;--bg:#f4f6f8;--card:#fff;--text:#202b36;--muted:#687583;--line:#d7dee5}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg)}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text)}
+button{font:inherit;cursor:pointer}
+.page{max-width:1180px;margin:auto;padding:20px 24px 40px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:15px}
+h1{margin:0;font-size:29px;line-height:1.15;letter-spacing:-.02em}
+.subtitle{margin-top:6px;color:var(--muted);font-size:14px}
+.report{margin-top:8px;color:var(--muted);font-size:12px}.report strong{color:var(--brand)}
+.refresh{width:40px;height:40px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--brand);display:grid;place-items:center}
+.refresh svg,.module-icon svg,.arrow svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.card{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px}
+.company{display:flex;align-items:center;gap:12px;padding-bottom:17px;border-bottom:1px solid var(--line)}
+.logo{width:55px;height:55px;border:1px solid var(--line);border-radius:9px;background:var(--soft);display:grid;place-items:center;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:contain}
+.company-name{font-size:17px;font-weight:800;color:var(--brand)}
+.company-id{font-size:10px;color:var(--muted);margin-top:3px}
+.section{margin-top:19px}.section-title{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.module{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;padding:16px;display:flex;align-items:center;gap:13px;text-align:left;color:var(--text);transition:.15s}
+.module:hover{border-color:#b8c8d5;transform:translateY(-1px)}
+.module-icon{width:48px;height:48px;border-radius:8px;background:var(--soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto}
+.title{font-size:14px;font-weight:800;color:var(--brand)}.desc{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}
+.arrow{margin-left:auto;color:var(--muted)}
+.note{margin-top:15px;padding:10px 12px;border-radius:7px;background:var(--soft);color:var(--brand);font-size:10px;line-height:1.45}
+@media(max-width:650px){.page{padding:16px 13px 28px}.top h1{font-size:26px}.grid{grid-template-columns:1fr}.card{padding:15px}}
+</style>
+</head>
+<body>
+<main class="page">
+<section class="top">
+<div><h1>CRM</h1><div class="subtitle">Client relationship and compliance management</div><div class="report">Report as on : <strong id="date">--/--/----</strong></div></div>
+<button class="refresh" id="refresh" title="Refresh" aria-label="Refresh"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.7-4L3 9"/><path d="M3 4v5h5"/><path d="M4 13a8 8 0 0 0 14.7 4L21 15"/><path d="M21 20v-5h-5"/></svg></button>
+</section>
+
+<section class="card">
+<div class="company">
+<div class="logo" id="logo"><span style="font-weight:800;color:var(--brand)">CM</span></div>
+<div><div class="company-name" id="companyName">Company</div><div class="company-id" id="companyId">Company ID: —</div></div>
+</div>
+
+<div class="section">
+<div class="section-title">CRM</div>
+<div class="grid">
+
+<button class="module" onclick="openPage('clients.html')">
+<div class="module-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+<div><div class="title">Clients</div><div class="desc">Client master, profiles and complete client records.</div></div>
+<span class="arrow"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+</button>
+
+<button class="module" onclick="openPage('compliance.html')">
+<div class="module-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+<div><div class="title">Compliance</div><div class="desc">Track statutory work, deadlines, status and payments.</div></div>
+<span class="arrow"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+</button>
+
+<button class="module" onclick="openPage('credentials.html')">
+<div class="module-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h4M7 14h7"/><circle cx="17" cy="10" r="2"/></svg></div>
+<div><div class="title">Credentials</div><div class="desc">Secure client credentials and registration details.</div></div>
+<span class="arrow"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+</button>
+
+<button class="module" onclick="openPage('contacts.html')">
+<div class="module-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a6 6 0 0 1 12 0v2"/><path d="M16 4a4 4 0 0 1 0 7M18 15a5 5 0 0 1 3 4v2"/></svg></div>
+<div><div class="title">Contacts</div><div class="desc">Client contacts, communication details and relationships.</div></div>
+<span class="arrow"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+</button>
+
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">Additional</div>
+<div class="grid">
+
+<button class="module" onclick="openPage('settings.html')">
+<div class="module-icon"><svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19.4 15 .1.1a2 2 0 1 1-2.8 2.8l-.1-.1a2 2 0 0 0-3.4 1.4V19a2 2 0 1 1-4 0v-.1A2 2 0 0 0 5.8 17.5l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A2 2 0 0 0 1.6 11H2a2 2 0 1 1 0-4h-.1a2 2 0 0 0 1.4-3.4l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A2 2 0 0 0 9.5 2H10a2 2 0 1 1 4 0v.1a2 2 0 0 0 3.4 1.4l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A2 2 0 0 0 21.5 10H22a2 2 0 1 1 0 4h-.1a2 2 0 0 0-2.5 1Z"/></svg></div>
+<div><div class="title">Settings</div><div class="desc">CRM preferences and module configuration.</div></div>
+<span class="arrow"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+</button>
+
+<button class="module" onclick="openPage('report.html')">
+<div class="module-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h17"/><path d="m7 15 4-4 3 2 5-6"/></svg></div>
+<div><div class="title">Reports</div><div class="desc">CRM activity, client and compliance reports.</div></div>
+<span class="arrow"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+</button>
+
+</div>
+</div>
+
+<div class="note">The selected Company ID is shared with CRM submodules so clients, credentials, compliance and contacts remain linked to the same business.</div>
+</section>
+</main>
+
+<script>
+const pad=n=>String(n).padStart(2,"0"),d=new Date();
+document.getElementById("date").textContent=`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+function openPage(file){window.location.href=file}
+function loadCompany(){
+ try{
+  const c=JSON.parse(localStorage.getItem("bizodit.activeCompany")||"null");
+  if(!c)return;
+  document.getElementById("companyName").textContent=c.CompanyName||"Company";
+  document.getElementById("companyId").textContent="Company ID: "+(c.CompanyID||"—");
+  if(c.LogoURL)document.getElementById("logo").innerHTML=`<img src="${String(c.LogoURL).replaceAll('"',"&quot;")}" alt="Company logo">`;
+ }catch(e){}
+}
+loadCompany();
+document.getElementById("refresh").onclick=loadCompany;
+</script>
+</body>
+</html>
