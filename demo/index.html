@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b3b66">
+<meta name="description" content="BizOdit — Business Management">
+<link rel="manifest" href="manifest.json">
+<title>BizOdit</title>
+
+<style>
+:root{
+    --brand:#0b3b66;
+    --brand-soft:#e8f1f7;
+    --bg:#f4f6f8;
+    --card:#fff;
+    --text:#202b36;
+    --muted:#687583;
+    --line:#d8dee5;
+
+    --header:76px;
+    --sidebar:290px;
+    --bottom:78px;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+button{
+    font:inherit;
+}
+
+button:focus-visible{
+    outline:2px solid var(--brand);
+    outline-offset:2px;
+}
+
+/* =========================================================
+   APP SHELL
+========================================================= */
+
+.app-shell{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header{
+    position:fixed;
+    z-index:1000;
+    top:0;
+    left:0;
+    right:0;
+    height:var(--header);
+
+    background:#fff;
+    border-bottom:1px solid var(--line);
+
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:0 20px;
+}
+
+.menu-button{
+    width:46px;
+    height:46px;
+
+    border:1px solid var(--line);
+    border-radius:8px;
+
+    background:#fff;
+    color:var(--brand);
+
+    display:grid;
+    place-items:center;
+
+    cursor:pointer;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    min-width:0;
+    text-decoration:none;
+}
+
+.logo{
+    width:46px;
+    height:46px;
+
+    border-radius:8px;
+    background:var(--brand);
+
+    display:grid;
+    place-items:center;
+
+    overflow:hidden;
+    flex:none;
+}
+
+.logo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.brand-name{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+}
+
+.brand-name img{
+    max-width:160px;
+    max-height:29px;
+
+    object-fit:contain;
+    object-position:left center;
+}
+
+.brand-text{
+    color:var(--brand);
+    font-size:21px;
+    font-weight:750;
+}
+
+.brand-sub{
+    margin-top:1px;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.header-actions{
+    margin-left:auto;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.header-button,
+.profile{
+    width:46px;
+    height:46px;
+
+    border:1px solid var(--line);
+    border-radius:8px;
+
+    display:grid;
+    place-items:center;
+
+    cursor:pointer;
+}
+
+.header-button{
+    background:#fff;
+    color:var(--brand);
+}
+
+.profile{
+    border:0;
+    background:#edf2f5;
+    color:var(--brand);
+
+    font-size:13px;
+    font-weight:800;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar{
+    position:fixed;
+    z-index:1200;
+
+    left:0;
+    top:var(--header);
+    bottom:0;
+
+    width:var(--sidebar);
+
+    background:#fff;
+    border-right:1px solid var(--line);
+
+    padding:18px 13px;
+
+    overflow-y:auto;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.menu-heading{
+    padding:0 12px 12px;
+
+    color:var(--muted);
+
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.08em;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.nav-item{
+    width:100%;
+    min-height:50px;
+
+    padding:0 13px;
+
+    border:0;
+    border-radius:8px;
+
+    background:transparent;
+    color:#687583;
+
+    display:flex;
+    align-items:center;
+    gap:14px;
+
+    cursor:pointer;
+    text-align:left;
+
+    font-size:15px;
+    font-weight:650;
+}
+
+.nav-item:hover,
+.nav-item.active{
+    background:var(--brand-soft);
+    color:var(--brand);
+}
+
+.ico{
+    width:24px;
+    height:24px;
+
+    flex:none;
+
+    display:grid;
+    place-items:center;
+}
+
+.ico svg{
+    width:100%;
+    height:100%;
+
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.9;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.sidebar-footer{
+    margin-top:auto;
+
+    padding:16px 8px 3px;
+
+    border-top:1px solid var(--line);
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.sidebar-mark{
+    width:36px;
+    height:36px;
+
+    border-radius:7px;
+
+    background:var(--brand);
+    color:#fff;
+
+    display:grid;
+    place-items:center;
+
+    font-size:12px;
+    font-weight:800;
+}
+
+.sidebar-footer strong{
+    display:block;
+    font-size:12px;
+}
+
+.sidebar-footer small{
+    display:block;
+    margin-top:2px;
+
+    color:var(--muted);
+    font-size:9px;
+}
+
+/* =========================================================
+   MAIN / IFRAME
+========================================================= */
+
+.main{
+    position:fixed;
+    z-index:1;
+
+    top:var(--header);
+    left:var(--sidebar);
+    right:0;
+    bottom:0;
+
+    background:var(--bg);
+    overflow:hidden;
+}
+
+.module-frame{
+    width:100%;
+    height:100%;
+
+    border:0;
+    display:block;
+
+    background:var(--bg);
+}
+
+.frame-loading{
+    position:absolute;
+    inset:0;
+
+    z-index:3;
+
+    background:var(--bg);
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    pointer-events:none;
+}
+
+.frame-loading.show{
+    display:flex;
+}
+
+.frame-loading-inner{
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+.loader-dot{
+    width:30px;
+    height:30px;
+
+    margin:0 auto 10px;
+
+    border:2px solid var(--line);
+    border-top-color:var(--brand);
+
+    border-radius:50%;
+
+    animation:spin .9s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+.bottom{
+    display:none;
+}
+
+.overlay{
+    display:none;
+}
+
+.mobile-close{
+    display:none;
+}
+
+@media(max-width:720px){
+
+    :root{
+        --header:72px;
+        --bottom:76px;
+    }
+
+    .header{
+        padding:0 11px;
+        gap:8px;
+    }
+
+    /*
+       Mobile:
+       No hamburger in header.
+       MENU in bottom navigation opens sidebar.
+    */
+
+    .menu-button{
+        display:none;
+    }
+
+    .logo{
+        width:43px;
+        height:43px;
+    }
+
+    .brand-name img{
+        max-width:125px;
+        max-height:27px;
+    }
+
+    .brand-text{
+        font-size:20px;
+    }
+
+    .header-actions{
+        gap:6px;
+    }
+
+    .header-button,
+    .profile{
+        width:42px;
+        height:42px;
+    }
+
+    .sidebar{
+        top:0;
+
+        width:min(330px,86vw);
+
+        transform:translateX(-105%);
+
+        transition:transform .22s ease;
+
+        box-shadow:10px 0 30px rgba(0,0,0,.10);
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .overlay{
+        position:fixed;
+        z-index:1100;
+
+        inset:0;
+
+        background:rgba(20,30,40,.35);
+    }
+
+    .overlay.show{
+        display:block;
+    }
+
+    .mobile-close{
+        display:grid;
+
+        margin-left:auto;
+
+        width:44px;
+        height:44px;
+
+        border:1px solid var(--line);
+        border-radius:8px;
+
+        background:#fff;
+        color:var(--brand);
+
+        place-items:center;
+    }
+
+    .menu-heading{
+        font-size:12px;
+        padding:0 13px 13px;
+    }
+
+    .nav-item{
+        min-height:55px;
+        padding:0 14px;
+
+        gap:16px;
+
+        font-size:16px;
+    }
+
+    .nav-item .ico{
+        width:26px;
+        height:26px;
+    }
+
+    .main{
+        left:0;
+        bottom:var(--bottom);
+    }
+
+    .bottom{
+        position:fixed;
+        z-index:1000;
+
+        left:0;
+        right:0;
+        bottom:0;
+
+        height:var(--bottom);
+
+        background:#fff;
+        border-top:1px solid var(--line);
+
+        display:grid;
+        grid-template-columns:repeat(5,1fr);
+
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .bottom-item{
+        border:0;
+
+        background:#fff;
+        color:#707b85;
+
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+
+        gap:4px;
+
+        font-size:9px;
+        font-weight:750;
+
+        cursor:pointer;
+    }
+
+    .bottom-item.active{
+        color:var(--brand);
+    }
+
+    .bottom-item .ico{
+        width:27px;
+        height:27px;
+    }
+
+    .brand-sub{
+        display:none;
+    }
+}
+
+@media(max-width:390px){
+
+    .brand-name img{
+        max-width:110px;
+    }
+
+    .header-button,
+    .profile{
+        width:40px;
+        height:40px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+<!-- =========================================================
+     PERMANENT HEADER
+========================================================= -->
+
+<header class="header">
+
+    <button
+        class="menu-button"
+        id="desktopMenuButton"
+        aria-label="Open menu">
+
+        <span class="ico" data-icon="menu"></span>
+
+    </button>
+
+
+    <a
+        href="#"
+        class="brand"
+        onclick="openPage('dashboard');return false;">
+
+        <div class="logo">
+
+            <img
+                src="assets/logo.png"
+                alt="CM"
+                onerror="this.style.display='none'">
+
+        </div>
+
+
+        <div class="brand-name">
+
+            <img
+                src="assets/name.png"
+                alt="BizOdit"
+                onerror="
+                    this.style.display='none';
+                    document.getElementById('brandFallback').style.display='block';
+                ">
+
+            <strong
+                id="brandFallback"
+                class="brand-text"
+                style="display:none">
+                BizOdit
+            </strong>
+
+            <small class="brand-sub">
+                Business Management
+            </small>
+
+        </div>
+
+    </a>
+
+
+    <div class="header-actions">
+
+        <button
+            class="header-button"
+            id="searchButton"
+            aria-label="Search">
+
+            <span class="ico" data-icon="search"></span>
+
+        </button>
+
+
+        <button
+            class="header-button"
+            id="bellButton"
+            aria-label="Notifications">
+
+            <span class="ico" data-icon="bell"></span>
+
+        </button>
+
+
+        <button
+            class="profile"
+            id="profileButton"
+            aria-label="Profile">
+
+            CM
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     PERMANENT SIDEBAR
+========================================================= -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div style="display:flex;align-items:center">
+
+        <div class="menu-heading">
+            MAIN MENU
+        </div>
+
+        <button
+            class="mobile-close"
+            id="closeMenu"
+            aria-label="Close menu">
+
+            <span class="ico" data-icon="x"></span>
+
+        </button>
+
+    </div>
+
+
+    <nav class="nav">
+
+        <!-- MAIN DASHBOARD -->
+        <button
+            class="nav-item active"
+            data-route="dashboard"
+            onclick="openPage('dashboard')">
+
+            <span class="ico" data-icon="layout-dashboard"></span>
+            <span>Dashboard</span>
+
+        </button>
+
+
+        <!-- APPLICATION HOME -->
+        <button
+            class="nav-item"
+            data-route="home"
+            onclick="openPage('home')">
+
+            <span class="ico" data-icon="house"></span>
+            <span>Home</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="company"
+            onclick="openPage('company')">
+
+            <span class="ico" data-icon="building-2"></span>
+            <span>Company</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="crm"
+            onclick="openPage('crm')">
+
+            <span class="ico" data-icon="users-round"></span>
+            <span>CRM</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="accounts"
+            onclick="openPage('accounts')">
+
+            <span class="ico" data-icon="wallet"></span>
+            <span>Accounts</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="employees"
+            onclick="openPage('employees')">
+
+            <span class="ico" data-icon="users"></span>
+            <span>Employees</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="projects"
+            onclick="openPage('projects')">
+
+            <span class="ico" data-icon="briefcase"></span>
+            <span>Projects</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="tax-compliance"
+            onclick="openPage('tax-compliance')">
+
+            <span class="ico" data-icon="file-check"></span>
+            <span>Tax Compliance</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="data"
+            onclick="openPage('data')">
+
+            <span class="ico" data-icon="database"></span>
+            <span>Data</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="calendar"
+            onclick="openPage('calendar')">
+
+            <span class="ico" data-icon="calendar-days"></span>
+            <span>Calendar</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="reports"
+            onclick="openPage('reports')">
+
+            <span class="ico" data-icon="chart"></span>
+            <span>Reports</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="settings"
+            onclick="openPage('settings')">
+
+            <span class="ico" data-icon="settings"></span>
+            <span>Settings</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="users"
+            onclick="openPage('users')">
+
+            <span class="ico" data-icon="user-cog"></span>
+            <span>Users</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="more"
+            onclick="openPage('more')">
+
+            <span class="ico" data-icon="grid"></span>
+            <span>More</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-route="auth"
+            onclick="openPage('auth')">
+
+            <span class="ico" data-icon="log-in"></span>
+            <span>Login / Create Account</span>
+
+        </button>
+
+    </nav>
+
+
+    <div class="sidebar-footer">
+
+        <div class="sidebar-mark">
+            CM
+        </div>
+
+        <div>
+            <strong>BizOdit</strong>
+            <small>Business Management</small>
+        </div>
+
+    </div>
+
+</aside>
+
+
+<div
+    class="overlay"
+    id="overlay">
+</div>
+
+
+<!-- =========================================================
+     PERMANENT MODULE FRAME
+
+     IMPORTANT:
+     index.html loads dashboard.html immediately.
+     Dashboard is NOT embedded as content in index.
+     It is a separate module inside this iframe.
+========================================================= -->
+
+<main class="main">
+
+    <div
+        class="frame-loading"
+        id="frameLoading">
+
+        <div class="frame-loading-inner">
+
+            <div class="loader-dot"></div>
+
+            Loading BizOdit
+
+        </div>
+
+    </div>
+
+
+    <iframe
+        id="moduleFrame"
+        class="module-frame"
+        title="BizOdit Dashboard"
+        src="modules/dashboard/dashboard.html"
+        allow="clipboard-read; clipboard-write"
+        loading="eager">
+    </iframe>
+
+</main>
+
+
+<!-- =========================================================
+     MOBILE BOTTOM NAVIGATION
+========================================================= -->
+
+<nav class="bottom">
+
+    <button
+        class="bottom-item active"
+        data-route="dashboard"
+        onclick="openPage('dashboard')">
+
+        <span
+            class="ico"
+            data-icon="layout-dashboard">
+        </span>
+
+        <span>DASH</span>
+
+    </button>
+
+
+    <button
+        class="bottom-item"
+        data-route="home"
+        onclick="openPage('home')">
+
+        <span
+            class="ico"
+            data-icon="house">
+        </span>
+
+        <span>HOME</span>
+
+    </button>
+
+
+    <button
+        class="bottom-item"
+        data-route="crm"
+        onclick="openPage('crm')">
+
+        <span
+            class="ico"
+            data-icon="users-round">
+        </span>
+
+        <span>CRM</span>
+
+    </button>
+
+
+    <button
+        class="bottom-item"
+        data-route="accounts"
+        onclick="openPage('accounts')">
+
+        <span
+            class="ico"
+            data-icon="wallet">
+        </span>
+
+        <span>ACCOUNTS</span>
+
+    </button>
+
+
+    <button
+        class="bottom-item"
+        id="bottomMenu"
+        aria-label="Menu">
+
+        <span
+            class="ico"
+            data-icon="menu">
+        </span>
+
+        <span>MENU</span>
+
+    </button>
+
+</nav>
+
+</div>
+
+
+<script>
+/* =========================================================
+   BIZODIT MODULE ROUTES
+
+   DASHBOARD = main business dashboard
+   HOME      = BizOdit application home
+
+   Every route opens its own HTML inside the SAME iframe.
+========================================================= */
+
+const MODULES = {
+
+    dashboard:
+        "modules/dashboard/dashboard.html",
+
+    home:
+        "modules/home/home.html",
+
+    company:
+        "modules/company/company.html",
+
+    crm:
+        "modules/CRM/crm.html",
+
+    accounts:
+        "modules/accounts/accounts.html",
+
+    employees:
+        "modules/Employees/employees.html",
+
+    projects:
+        "modules/projects/projects.html",
+
+    "tax-compliance":
+        "modules/tax-compliance/tax-compliance.html",
+
+    data:
+        "modules/data/data.html",
+
+    calendar:
+        "modules/calendar/calendar.html",
+
+    reports:
+        "modules/report/report.html",
+
+    settings:
+        "modules/settings/settings.html",
+
+    users:
+        "modules/users/users.html",
+
+    more:
+        "modules/more/more.html",
+
+    auth:
+        "modules/auth/signin.html"
+
+};
+
+
+/* =========================================================
+   ICONS
+========================================================= */
+
+const ICONS = {
+
+menu:`<svg viewBox="0 0 24 24">
+<path d="M4 6h16M4 12h16M4 18h16"/>
+</svg>`,
+
+x:`<svg viewBox="0 0 24 24">
+<path d="m6 6 12 12M18 6 6 18"/>
+</svg>`,
+
+search:`<svg viewBox="0 0 24 24">
+<circle cx="11" cy="11" r="7"/>
+<path d="m20 20-4-4"/>
+</svg>`,
+
+bell:`<svg viewBox="0 0 24 24">
+<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+<path d="M10 21h4"/>
+</svg>`,
+
+'layout-dashboard':`<svg viewBox="0 0 24 24">
+<rect x="3" y="3" width="7" height="7" rx="1"/>
+<rect x="14" y="3" width="7" height="7" rx="1"/>
+<rect x="3" y="14" width="7" height="7" rx="1"/>
+<rect x="14" y="14" width="7" height="7" rx="1"/>
+</svg>`,
+
+house:`<svg viewBox="0 0 24 24">
+<path d="m3 10 9-7 9 7"/>
+<path d="M5 9v11h14V9"/>
+<path d="M9 20v-6h6v6"/>
+</svg>`,
+
+'building-2':`<svg viewBox="0 0 24 24">
+<path d="M4 21V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16"/>
+<path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/>
+<path d="M9 21v-3h6v3"/>
+</svg>`,
+
+'users-round':`<svg viewBox="0 0 24 24">
+<path d="M18 21a6 6 0 0 0-12 0"/>
+<circle cx="12" cy="7" r="4"/>
+<path d="M21 21a5 5 0 0 0-4-4.9M18 3.5a4 4 0 0 1 0 7"/>
+</svg>`,
+
+users:`<svg viewBox="0 0 24 24">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+<circle cx="9" cy="7" r="4"/>
+<path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+</svg>`,
+
+wallet:`<svg viewBox="0 0 24 24">
+<path d="M3 7h17a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14"/>
+<path d="M16 13h6"/>
+</svg>`,
+
+database:`<svg viewBox="0 0 24 24">
+<ellipse cx="12" cy="5" rx="8" ry="3"/>
+<path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/>
+<path d="M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7"/>
+</svg>`,
+
+briefcase:`<svg viewBox="0 0 24 24">
+<rect x="3" y="7" width="18" height="13" rx="2"/>
+<path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+<path d="M3 12h18"/>
+</svg>`,
+
+'file-check':`<svg viewBox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<path d="M14 2v6h6"/>
+<path d="m8 15 2 2 5-5"/>
+</svg>`,
+
+'calendar-days':`<svg viewBox="0 0 24 24">
+<rect x="3" y="4" width="18" height="17" rx="2"/>
+<path d="M16 2v4M8 2v4M3 10h18"/>
+<path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+</svg>`,
+
+chart:`<svg viewBox="0 0 24 24">
+<path d="M3 3v18h18"/>
+<path d="m7 16 4-5 3 3 6-8"/>
+</svg>`,
+
+settings:`<svg viewBox="0 0 24 24">
+<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
+<path d="M19.4 15a7.7 7.7 0 0 0 0-6l1.5-1.2-1.8-3.1-1.8.7a7.8 7.8 0 0 0-3-1.7L14 2h-4l-.3 1.7a7.8 7.8 0 0 0-3 1.7l-1.8-.7-1.8 3.1L4.6 9a7.7 7.7 0 0 0 0 6l-1.5 1.2 1.8 3.1 1.8-.7a7.8 7.8 0 0 0 3 1.7L10 22h4l.3-1.7a7.8 7.8 0 0 0 3-1.7l1.8.7 1.8-.7 1.8-3.1z"/>
+</svg>`,
+
+'user-cog':`<svg viewBox="0 0 24 24">
+<circle cx="9" cy="7" r="4"/>
+<path d="M2 21v-2a7 7 0 0 1 12-4.9"/>
+<path d="M19 14l.6 1.2 1.4.2-1 .9.2 1.4-1.2-.7-1.2.7.2-1.4-1-.9 1.4-.2z"/>
+</svg>`,
+
+grid:`<svg viewBox="0 0 24 24">
+<rect x="3" y="3" width="7" height="7" rx="1"/>
+<rect x="14" y="3" width="7" height="7" rx="1"/>
+<rect x="3" y="14" width="7" height="7" rx="1"/>
+<rect x="14" y="14" width="7" height="7" rx="1"/>
+</svg>`,
+
+'log-in':`<svg viewBox="0 0 24 24">
+<path d="M10 17l5-5-5-5M15 12H3"/>
+<path d="M21 19V5a2 2 0 0 0-2-2h-6"/>
+</svg>`
+
+};
+
+
+/* =========================================================
+   RENDER ICONS
+========================================================= */
+
+function renderIcons(){
+
+    document
+        .querySelectorAll("[data-icon]")
+        .forEach(el=>{
+
+            const name =
+                el.getAttribute("data-icon");
+
+            if(ICONS[name]){
+                el.innerHTML=ICONS[name];
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   ACTIVE NAVIGATION
+========================================================= */
+
+function setActive(route){
+
+    document
+        .querySelectorAll(
+            ".nav-item,.bottom-item"
+        )
+        .forEach(item=>{
+
+            item.classList.toggle(
+                "active",
+                item.dataset.route===route
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+function openMenu(){
+
+    document
+        .getElementById("sidebar")
+        .classList.add("open");
+
+    document
+        .getElementById("overlay")
+        .classList.add("show");
+
+}
+
+function closeMenu(){
+
+    document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+    document
+        .getElementById("overlay")
+        .classList.remove("show");
+
+}
+
+function toggleMenu(){
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    if(sidebar.classList.contains("open")){
+        closeMenu();
+    }else{
+        openMenu();
+    }
+
+}
+
+
+/* =========================================================
+   OPEN MODULE
+
+   This is the central navigation function.
+
+   index.html stays loaded permanently.
+   Only moduleFrame.src changes.
+
+   Dashboard -> dashboard.html
+   Home      -> home.html
+   CRM       -> crm.html
+   etc.
+========================================================= */
+
+function openPage(route){
+
+    const path =
+        MODULES[route];
+
+    if(!path){
+        console.error(
+            "BizOdit module not found:",
+            route
+        );
+        return;
+    }
+
+    const frame =
+        document.getElementById("moduleFrame");
+
+    const loading =
+        document.getElementById("frameLoading");
+
+    setActive(route);
+
+    loading.classList.add("show");
+
+    frame.title =
+        "BizOdit — " + route;
+
+    frame.src =
+        path;
+
+    closeMenu();
+
+}
+
+
+/* =========================================================
+   IFRAME LOAD
+========================================================= */
+
+document
+    .getElementById("moduleFrame")
+    .addEventListener(
+        "load",
+        ()=>{
+
+            document
+                .getElementById("frameLoading")
+                .classList.remove("show");
+
+        }
+    );
+
+
+/* =========================================================
+   SEARCH
+
+   If a module implements:
+       window.focusModuleSearch()
+
+   it will receive the search command.
+   Otherwise Data opens.
+========================================================= */
+
+document
+    .getElementById("searchButton")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            const frame =
+                document.getElementById(
+                    "moduleFrame"
+                );
+
+            try{
+
+                if(
+                    typeof frame.contentWindow
+                        .focusModuleSearch ===
+                    "function"
+                ){
+
+                    frame.contentWindow
+                        .focusModuleSearch();
+
+                    return;
+
+                }
+
+            }catch(e){}
+
+            openPage("data");
+
+        }
+    );
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+document
+    .getElementById("bellButton")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            const frame =
+                document.getElementById(
+                    "moduleFrame"
+                );
+
+            try{
+
+                if(
+                    typeof frame.contentWindow
+                        .openNotifications ===
+                    "function"
+                ){
+
+                    frame.contentWindow
+                        .openNotifications();
+
+                    return;
+
+                }
+
+            }catch(e){}
+
+            openPage("reports");
+
+        }
+    );
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+document
+    .getElementById("profileButton")
+    .addEventListener(
+        "click",
+        ()=>openPage("users")
+    );
+
+
+/* =========================================================
+   DESKTOP MENU
+========================================================= */
+
+document
+    .getElementById("desktopMenuButton")
+    .addEventListener(
+        "click",
+        toggleMenu
+    );
+
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
+document
+    .getElementById("bottomMenu")
+    .addEventListener(
+        "click",
+        toggleMenu
+    );
+
+document
+    .getElementById("closeMenu")
+    .addEventListener(
+        "click",
+        closeMenu
+    );
+
+document
+    .getElementById("overlay")
+    .addEventListener(
+        "click",
+        closeMenu
+    );
+
+
+/* =========================================================
+   ESC
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(e.key==="Escape"){
+            closeMenu();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FIREBASE CONFIG
+
+   Your actual Firebase configuration remains in:
+       js/firebase-config.js
+
+   The shell loads it without placing API keys here.
+========================================================= */
+
+import("./js/firebase-config.js")
+    .then(()=>{
+
+        console.log(
+            "BizOdit Firebase configuration loaded."
+        );
+
+    })
+    .catch(error=>{
+
+        console.warn(
+            "BizOdit Firebase configuration was not loaded:",
+            error
+        );
+
+    });
+
+
+/* =========================================================
+   SERVICE WORKER
+========================================================= */
+
+if("serviceWorker" in navigator){
+
+    window.addEventListener(
+        "load",
+        ()=>{
+
+            navigator.serviceWorker
+                .register("./sw.js")
+                .catch(error=>{
+
+                    console.warn(
+                        "BizOdit service worker:",
+                        error
+                    );
+
+                });
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+
+   VERY IMPORTANT:
+   Dashboard opens immediately inside iframe.
+
+   No dashboard HTML is copied into index.html.
+========================================================= */
+
+renderIcons();
+
+setActive("dashboard");
+
+document
+    .getElementById("moduleFrame")
+    .src =
+        MODULES.dashboard;
+
+</script>
+
+</body>
+</html>
