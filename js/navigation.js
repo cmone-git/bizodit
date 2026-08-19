@@ -1,0 +1,1 @@
+export function initNavigation(){const t=document.getElementById('menuToggle');if(t)t.onclick=()=>document.body.classList.toggle('sidebar-open');document.querySelectorAll('.nav-item').forEach(a=>a.onclick=()=>document.body.classList.remove('sidebar-open'))}
