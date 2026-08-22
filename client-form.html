@@ -1,0 +1,5244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CM Developers | App Requirement Form</title>
+
+<!-- INTER -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- LUCIDE -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+
+<style>
+
+:root{
+    --navy:#16263F;
+    --navy-dark:#102039;
+    --navy-light:#EAF0F6;
+
+    --bg:#F4F5F7;
+    --card:#FFFFFF;
+
+    --text:#17202D;
+    --muted:#707985;
+
+    --border:#E1E5EA;
+
+    --success:#2F8F62;
+    --success-bg:#EAF7F0;
+
+    --danger:#C74B4B;
+
+    --radius:10px;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:"Inter",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+}
+
+button,
+input,
+select,
+textarea{
+    font-family:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+
+/* =========================
+HEADER
+========================= */
+
+.header{
+    height:70px;
+
+    background:#fff;
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 28px;
+
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    backdrop-filter:blur(10px);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.brand-logo{
+    width:40px;
+    height:40px;
+    object-fit:contain;
+}
+
+.brand-name{
+    width:118px;
+    max-height:27px;
+    object-fit:contain;
+    object-position:left center;
+    display:block;
+}
+
+.brand-subtitle{
+    color:var(--muted);
+    font-size:9px;
+    margin-top:2px;
+}
+
+.header-right{
+    color:var(--muted);
+    font-size:10px;
+}
+
+
+/* =========================
+MAIN
+========================= */
+
+.wrapper{
+    width:100%;
+    max-width:1080px;
+    margin:auto;
+    padding:34px 20px 60px;
+}
+
+.intro{
+    margin-bottom:24px;
+}
+
+.intro h1{
+    color:var(--navy);
+    font-size:28px;
+    line-height:1.2;
+    font-weight:700;
+    margin-bottom:8px;
+    letter-spacing:-.5px;
+}
+
+.intro p{
+    max-width:760px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.7;
+}
+
+
+/* =========================
+PROGRESS
+========================= */
+
+.progress-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:18px;
+}
+
+.progress-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.progress-top strong{
+    color:var(--navy);
+    font-size:12px;
+}
+
+.progress-top span{
+    color:var(--muted);
+    font-size:10px;
+}
+
+.progress-bar{
+    width:100%;
+    height:5px;
+    background:#ECEEF1;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    width:9%;
+    height:100%;
+    background:var(--navy);
+    transition:.3s ease;
+}
+
+.step-nav{
+    display:flex;
+    gap:7px;
+    overflow-x:auto;
+    padding-top:12px;
+    scrollbar-width:none;
+}
+
+.step-nav::-webkit-scrollbar{
+    display:none;
+}
+
+.step{
+    flex:1;
+    min-width:78px;
+
+    border:1px solid var(--border);
+    background:#fff;
+
+    border-radius:8px;
+
+    padding:8px 5px;
+
+    color:var(--muted);
+
+    text-align:center;
+
+    font-size:9px;
+
+    white-space:nowrap;
+}
+
+.step-number{
+    width:23px;
+    height:23px;
+
+    margin:0 auto 5px;
+
+    border-radius:50%;
+
+    background:#EEF0F3;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:9px;
+    font-weight:700;
+}
+
+.step.active{
+    border-color:#BCC8D6;
+    color:var(--navy);
+}
+
+.step.active .step-number{
+    background:var(--navy);
+    color:#fff;
+}
+
+.step.completed .step-number{
+    background:var(--success);
+    color:#fff;
+}
+
+
+/* =========================
+FORM
+========================= */
+
+.form-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:28px;
+}
+
+.form-step{
+    display:none;
+}
+
+.form-step.active{
+    display:block;
+}
+
+.section-heading{
+    margin-bottom:24px;
+}
+
+.section-heading h2{
+    color:var(--navy);
+    font-size:20px;
+    line-height:1.3;
+    margin-bottom:6px;
+}
+
+.section-heading p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+
+/* =========================
+FIELDS
+========================= */
+
+.field-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:18px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+label{
+    color:#364152;
+    font-size:12px;
+    font-weight:600;
+}
+
+.required{
+    color:var(--danger);
+}
+
+input,
+select,
+textarea{
+    width:100%;
+
+    border:1px solid var(--border);
+    background:#fff;
+
+    color:var(--text);
+
+    border-radius:8px;
+
+    outline:none;
+
+    transition:.2s;
+}
+
+input,
+select{
+    height:43px;
+    padding:0 12px;
+}
+
+textarea{
+    min-height:105px;
+    padding:11px 12px;
+    resize:vertical;
+    line-height:1.55;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:#A0A7B0;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:var(--navy);
+    box-shadow:0 0 0 3px rgba(22,38,63,.06);
+}
+
+
+/* =========================
+OPTION CARDS
+========================= */
+
+.option-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+}
+
+.option{
+    position:relative;
+}
+
+.option input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.option label{
+    min-height:75px;
+
+    border:1px solid var(--border);
+    border-radius:8px;
+
+    padding:12px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.option label i{
+    width:17px;
+    height:17px;
+    color:#7D8793;
+}
+
+.option label span{
+    font-size:11px;
+    font-weight:600;
+}
+
+.option label small{
+    color:var(--muted);
+    font-size:9px;
+    font-weight:400;
+}
+
+.option input:checked + label{
+    border-color:var(--navy);
+    background:var(--navy-light);
+}
+
+.option input:checked + label i{
+    color:var(--navy);
+}
+
+
+/* =========================
+DESIGN CHOICES
+========================= */
+
+.choice-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:9px;
+}
+
+.choice{
+    position:relative;
+}
+
+.choice input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.choice label{
+    min-height:49px;
+
+    border:1px solid var(--border);
+    border-radius:8px;
+
+    padding:10px;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    cursor:pointer;
+
+    color:#4D5867;
+    font-size:11px;
+
+    transition:.2s;
+}
+
+.choice label i{
+    width:16px;
+    height:16px;
+}
+
+.choice input:checked + label{
+    background:var(--navy-light);
+    border-color:var(--navy);
+    color:var(--navy);
+}
+
+
+/* =========================
+COLOR PICKER
+========================= */
+
+.color-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.color-box{
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:12px;
+    background:#FAFBFC;
+}
+
+.color-box-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:9px;
+}
+
+.color-box-title span{
+    font-size:11px;
+    font-weight:600;
+    color:#364152;
+}
+
+.color-picker{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.color-picker input[type="color"]{
+    width:42px;
+    height:38px;
+    padding:2px;
+    border-radius:7px;
+    cursor:pointer;
+}
+
+.color-picker input[type="text"]{
+    height:38px;
+}
+
+
+/* =========================
+SUBSECTION
+========================= */
+
+.subsection{
+    border-top:1px solid var(--border);
+    padding-top:22px;
+    margin-top:24px;
+}
+
+.subsection h3{
+    color:var(--navy);
+    font-size:14px;
+    margin-bottom:14px;
+}
+
+
+/* =========================
+FLOW
+========================= */
+
+.flow-box{
+    border:1px dashed #CCD3DB;
+    background:#FAFBFC;
+    border-radius:9px;
+    padding:14px;
+}
+
+.flow-list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.flow-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.flow-index{
+    width:29px;
+    height:29px;
+    flex-shrink:0;
+
+    border-radius:50%;
+
+    background:var(--navy);
+    color:#fff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:10px;
+    font-weight:700;
+}
+
+.flow-item input{
+    flex:1;
+}
+
+.remove-flow{
+    width:31px;
+    height:31px;
+
+    border:1px solid var(--border);
+    background:#fff;
+
+    border-radius:7px;
+
+    color:var(--danger);
+
+    font-size:17px;
+}
+
+.add-flow{
+    margin-top:11px;
+
+    border:1px solid var(--border);
+    background:#fff;
+
+    color:var(--navy);
+
+    border-radius:7px;
+
+    padding:8px 11px;
+
+    font-size:11px;
+    font-weight:600;
+}
+
+
+/* =========================
+STATUS
+========================= */
+
+.status-flow{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:7px;
+}
+
+.status-pill{
+    padding:8px 11px;
+
+    background:#fff;
+    border:1px solid var(--border);
+
+    border-radius:30px;
+
+    font-size:10px;
+}
+
+.arrow{
+    color:#9CA4AE;
+}
+
+
+/* =========================
+REVIEW
+========================= */
+
+.review-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:11px;
+}
+
+.review-card{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:14px;
+}
+
+.review-card h4{
+    color:var(--navy);
+    font-size:12px;
+    margin-bottom:8px;
+}
+
+.review-line{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:14px;
+
+    padding:6px 0;
+
+    border-bottom:1px solid #F0F1F3;
+
+    font-size:10px;
+    line-height:1.45;
+}
+
+.review-line:last-child{
+    border-bottom:0;
+}
+
+.review-line span:first-child{
+    color:var(--muted);
+}
+
+.review-line span:last-child{
+    text-align:right;
+    font-weight:600;
+}
+
+
+/* =========================
+BUTTONS
+========================= */
+
+.form-actions{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+
+    border-top:1px solid var(--border);
+
+    padding-top:20px;
+    margin-top:28px;
+}
+
+.btn{
+    min-height:43px;
+
+    padding:0 18px;
+
+    border:1px solid var(--border);
+    background:#fff;
+
+    color:var(--navy);
+
+    border-radius:8px;
+
+    font-size:12px;
+    font-weight:600;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+}
+
+.btn-primary{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+}
+
+.btn-primary:hover{
+    background:var(--navy-dark);
+}
+
+.btn-outline{
+    background:#fff;
+}
+
+.btn-success{
+    background:var(--success);
+    border-color:var(--success);
+    color:#fff;
+}
+
+
+/* =========================
+SUCCESS
+========================= */
+
+.success{
+    text-align:center;
+    padding:45px 15px 35px;
+}
+
+.success-icon{
+    width:65px;
+    height:65px;
+
+    margin:0 auto 18px;
+
+    border-radius:50%;
+
+    background:var(--success-bg);
+    color:var(--success);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.success h2{
+    color:var(--navy);
+    font-size:24px;
+    margin-bottom:8px;
+}
+
+.success p{
+    max-width:560px;
+    margin:auto;
+
+    color:var(--muted);
+
+    font-size:12px;
+    line-height:1.65;
+}
+
+.reference{
+    max-width:350px;
+
+    margin:21px auto 17px;
+
+    padding:15px;
+
+    border:1px solid var(--border);
+    background:#FAFBFC;
+
+    border-radius:8px;
+}
+
+.reference span{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    margin-bottom:5px;
+}
+
+.reference strong{
+    color:var(--navy);
+    font-size:20px;
+    letter-spacing:1px;
+}
+
+.success-actions{
+    display:flex;
+    justify-content:center;
+    gap:9px;
+    flex-wrap:wrap;
+}
+
+
+/* =========================
+FOOTER
+========================= */
+
+.footer{
+    text-align:center;
+    padding:25px 15px;
+
+    color:#8A929D;
+
+    font-size:9px;
+}
+
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:760px){
+
+    .header{
+        height:62px;
+        padding:0 14px;
+    }
+
+    .brand-logo{
+        width:35px;
+        height:35px;
+    }
+
+    .brand-name{
+        width:105px;
+    }
+
+    .header-right{
+        display:none;
+    }
+
+    .wrapper{
+        padding:22px 12px 40px;
+    }
+
+    .intro h1{
+        font-size:23px;
+    }
+
+    .intro p{
+        font-size:11.5px;
+    }
+
+    .form-card{
+        padding:19px 15px;
+    }
+
+    .field-grid{
+        grid-template-columns:1fr;
+    }
+
+    .field.full{
+        grid-column:auto;
+    }
+
+    .option-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .choice-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .color-row{
+        grid-template-columns:1fr;
+    }
+
+    .review-grid{
+        grid-template-columns:1fr;
+    }
+
+    .step{
+        min-width:70px;
+    }
+
+    .form-actions{
+        position:sticky;
+        bottom:0;
+
+        margin-left:-15px;
+        margin-right:-15px;
+
+        padding:12px 15px;
+
+        background:#fff;
+
+        z-index:30;
+    }
+
+    .form-actions .btn{
+        flex:1;
+    }
+
+    .status-flow{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .arrow{
+        display:none;
+    }
+
+}
+
+@media(max-width:420px){
+
+    .option-grid{
+        gap:8px;
+    }
+
+    .option label{
+        min-height:72px;
+        padding:9px;
+    }
+
+    .option label span{
+        font-size:10px;
+    }
+
+    .option label small{
+        font-size:8px;
+    }
+
+    .success-actions .btn{
+        width:100%;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ============================================================
+HEADER
+============================================================ -->
+
+<header class="header">
+
+    <div class="brand">
+
+        <img
+            class="brand-logo"
+            src="assets/logo.png"
+            alt="CM Developers"
+        >
+
+        <div>
+
+            <img
+                class="brand-name"
+                src="assets/name.png"
+                alt="CM Developers"
+            >
+
+            <div class="brand-subtitle">
+                App Requirement & Business Workflow
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="header-right">
+        Secure Client Information Form
+    </div>
+
+</header>
+
+
+<main class="wrapper">
+
+
+<!-- ============================================================
+INTRO
+============================================================ -->
+
+<div class="intro">
+
+    <h1>
+        Let's understand your business.
+    </h1>
+
+    <p>
+        Complete this form to help CM Developers understand your
+        business, workflow, application requirements and preferred
+        design direction. Your information will be used to prepare
+        the application structure and development plan.
+    </p>
+
+</div>
+
+
+<!-- ============================================================
+PROGRESS
+============================================================ -->
+
+<div class="progress-card">
+
+    <div class="progress-top">
+
+        <strong id="progressTitle">
+            01 · Business
+        </strong>
+
+        <span id="progressPercent">
+            9%
+        </span>
+
+    </div>
+
+    <div class="progress-bar">
+
+        <div
+            id="progressFill"
+            class="progress-fill">
+        </div>
+
+    </div>
+
+
+    <div class="step-nav">
+
+        <div class="step active">
+            <div class="step-number">1</div>
+            Business
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            Workflow
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            App
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            Users
+        </div>
+
+        <div class="step">
+            <div class="step-number">5</div>
+            Admin
+        </div>
+
+        <div class="step">
+            <div class="step-number">6</div>
+            Client
+        </div>
+
+        <div class="step">
+            <div class="step-number">7</div>
+            Tracking
+        </div>
+
+        <div class="step">
+            <div class="step-number">8</div>
+            Integrations
+        </div>
+
+        <div class="step">
+            <div class="step-number">9</div>
+            Reports
+        </div>
+
+        <div class="step">
+            <div class="step-number">10</div>
+            Design
+        </div>
+
+        <div class="step">
+            <div class="step-number">11</div>
+            Review
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+FORM
+============================================================ -->
+
+<form id="requirementForm">
+
+<div class="form-card">
+
+
+<!-- ============================================================
+01 BUSINESS
+============================================================ -->
+
+<section class="form-step active">
+
+<div class="section-heading">
+
+    <h2>
+        Business & Contact Details
+    </h2>
+
+    <p>
+        Tell us about your business and the primary project contact.
+    </p>
+
+</div>
+
+
+<div class="field-grid">
+
+
+<div class="field">
+
+<label>
+Business / Company Name
+<span class="required">*</span>
+</label>
+
+<input
+required
+name="companyName"
+placeholder="Enter company name"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Business Type
+</label>
+
+<select name="businessType">
+
+<option value="">
+Select type
+</option>
+
+<option>Proprietorship</option>
+<option>Partnership</option>
+<option>LLP</option>
+<option>Private Limited</option>
+<option>Public Limited</option>
+<option>Trust / Society</option>
+<option>Other</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Contact Person
+<span class="required">*</span>
+</label>
+
+<input
+required
+name="contactPerson"
+placeholder="Full name"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Designation
+</label>
+
+<input
+name="designation"
+placeholder="Owner / Director / Manager"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Mobile Number
+<span class="required">*</span>
+</label>
+
+<input
+required
+type="tel"
+name="mobile"
+placeholder="+91"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Email Address
+<span class="required">*</span>
+</label>
+
+<input
+required
+type="email"
+name="email"
+placeholder="name@company.com"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+WhatsApp Number
+</label>
+
+<input
+type="tel"
+name="whatsapp"
+placeholder="+91"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Website
+</label>
+
+<input
+type="url"
+name="website"
+placeholder="https://"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Industry / Business Category
+</label>
+
+<input
+name="industry"
+placeholder="Example: Healthcare, Trading, Education"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Number of Branches
+</label>
+
+<input
+type="number"
+name="branches"
+min="1"
+placeholder="1"
+>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Briefly describe your business
+</label>
+
+<textarea
+name="businessDescription"
+placeholder="What does your business do? What products or services do you provide?"
+></textarea>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+02 WORKFLOW
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Current Business Workflow
+</h2>
+
+<p>
+Explain how work is currently received, processed and completed.
+</p>
+
+</div>
+
+
+<div class="field-grid">
+
+
+<div class="field full">
+
+<label>
+Describe your current workflow
+</label>
+
+<textarea
+name="currentWorkflow"
+placeholder="Explain the process from enquiry/request/order until completion."
+></textarea>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+What problems do you currently face?
+</label>
+
+<textarea
+name="problems"
+placeholder="Example: Manual entries, missed follow-ups, duplicate data, no tracking..."
+></textarea>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+What would you like to automate?
+</label>
+
+<textarea
+name="automation"
+placeholder="Describe repetitive work you want the application to automate."
+></textarea>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Current Software / System
+</label>
+
+<input
+name="currentSoftware"
+placeholder="Excel, Tally, Zoho, custom software..."
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Existing Data Source
+</label>
+
+<select name="dataSource">
+
+<option value="">Select</option>
+
+<option>Excel</option>
+<option>Google Sheets</option>
+<option>Database</option>
+<option>Existing Software</option>
+<option>Paper Records</option>
+<option>Multiple Sources</option>
+<option>None</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<h3>
+Business Workflow Steps
+</h3>
+
+
+<div class="flow-box">
+
+<div id="flowList" class="flow-list">
+
+
+<div class="flow-item">
+
+<div class="flow-index">1</div>
+
+<input
+name="flow[]"
+placeholder="Example: Client Enquiry"
+>
+
+<button
+type="button"
+class="remove-flow"
+onclick="removeFlow(this)"
+>
+×
+</button>
+
+</div>
+
+
+<div class="flow-item">
+
+<div class="flow-index">2</div>
+
+<input
+name="flow[]"
+placeholder="Example: Request Received"
+>
+
+<button
+type="button"
+class="remove-flow"
+onclick="removeFlow(this)"
+>
+×
+</button>
+
+</div>
+
+
+</div>
+
+
+<button
+type="button"
+class="add-flow"
+onclick="addFlow()"
+>
++ Add workflow step
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+03 APP
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Application Requirements
+</h2>
+
+<p>
+Select the main modules required in the application.
+</p>
+
+</div>
+
+
+<div class="option-grid">
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="CRM" id="m1">
+<label for="m1">
+<i data-lucide="users"></i>
+<span>CRM</span>
+<small>Customers & leads</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Accounts" id="m2">
+<label for="m2">
+<i data-lucide="calculator"></i>
+<span>Accounts</span>
+<small>Finance & transactions</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Employees" id="m3">
+<label for="m3">
+<i data-lucide="user-round"></i>
+<span>Employees</span>
+<small>Staff management</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Tasks" id="m4">
+<label for="m4">
+<i data-lucide="list-checks"></i>
+<span>Tasks</span>
+<small>Work allocation</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Documents" id="m5">
+<label for="m5">
+<i data-lucide="folder"></i>
+<span>Documents</span>
+<small>Files & records</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Inventory" id="m6">
+<label for="m6">
+<i data-lucide="package"></i>
+<span>Inventory</span>
+<small>Stock management</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Service Tracking" id="m7">
+<label for="m7">
+<i data-lucide="clipboard-check"></i>
+<span>Service Tracking</span>
+<small>Track client work</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Payments" id="m8">
+<label for="m8">
+<i data-lucide="credit-card"></i>
+<span>Payments</span>
+<small>Payment tracking</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Notifications" id="m9">
+<label for="m9">
+<i data-lucide="bell"></i>
+<span>Notifications</span>
+<small>Alerts & reminders</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Reports" id="m10">
+<label for="m10">
+<i data-lucide="bar-chart-3"></i>
+<span>Reports</span>
+<small>Business insights</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Booking" id="m11">
+<label for="m11">
+<i data-lucide="calendar"></i>
+<span>Booking</span>
+<small>Appointments</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="modules" value="Other" id="m12">
+<label for="m12">
+<i data-lucide="plus"></i>
+<span>Other</span>
+<small>Custom requirement</small>
+</label>
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<div class="field">
+
+<label>
+Other Required Modules
+</label>
+
+<textarea
+name="otherModules"
+placeholder="Describe any module not listed above."
+></textarea>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+04 USERS
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Users & Permissions
+</h2>
+
+<p>
+Who will use the system and what level of access should they have?
+</p>
+
+</div>
+
+
+<div class="option-grid">
+
+
+<div class="option">
+<input type="checkbox" name="users" value="Admin" id="u1">
+<label for="u1">
+<i data-lucide="shield-check"></i>
+<span>Admin</span>
+<small>Full control</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="users" value="Manager" id="u2">
+<label for="u2">
+<i data-lucide="briefcase-business"></i>
+<span>Manager</span>
+<small>Team management</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="users" value="Employee" id="u3">
+<label for="u3">
+<i data-lucide="user"></i>
+<span>Employee</span>
+<small>Assigned work</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="users" value="Client" id="u4">
+<label for="u4">
+<i data-lucide="contact"></i>
+<span>Client</span>
+<small>Client portal</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="users" value="Accounts" id="u5">
+<label for="u5">
+<i data-lucide="receipt"></i>
+<span>Accounts</span>
+<small>Financial access</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="users" value="Agent" id="u6">
+<label for="u6">
+<i data-lucide="network"></i>
+<span>Agent</span>
+<small>Limited access</small>
+</label>
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<div class="field-grid">
+
+<div class="field">
+
+<label>
+Estimated Total Users
+</label>
+
+<input
+type="number"
+name="totalUsers"
+min="1"
+placeholder="Example: 25"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Expected Admin Users
+</label>
+
+<input
+type="number"
+name="adminUsers"
+min="1"
+placeholder="Example: 2"
+>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Describe user permissions
+</label>
+
+<textarea
+name="permissions"
+placeholder="Example: Employees can create tasks but cannot delete them. Managers can approve work."
+></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+05 ADMIN
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Admin Panel Requirements
+</h2>
+
+<p>
+Select the controls and functions required for the administration panel.
+</p>
+
+</div>
+
+
+<div class="option-grid">
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="Dashboard" id="a1">
+<label for="a1">
+<i data-lucide="layout-dashboard"></i>
+<span>Dashboard</span>
+<small>KPIs & overview</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="User Management" id="a2">
+<label for="a2">
+<i data-lucide="users"></i>
+<span>User Management</span>
+<small>Users & roles</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="Client Management" id="a3">
+<label for="a3">
+<i data-lucide="contact-round"></i>
+<span>Client Management</span>
+<small>Client master</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="Approvals" id="a4">
+<label for="a4">
+<i data-lucide="badge-check"></i>
+<span>Approvals</span>
+<small>Review workflow</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="Reports" id="a5">
+<label for="a5">
+<i data-lucide="chart-no-axes-combined"></i>
+<span>Reports</span>
+<small>Business reports</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="Activity Logs" id="a6">
+<label for="a6">
+<i data-lucide="history"></i>
+<span>Activity Logs</span>
+<small>User activities</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="Notifications" id="a7">
+<label for="a7">
+<i data-lucide="bell-ring"></i>
+<span>Notifications</span>
+<small>Alerts</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="Export" id="a8">
+<label for="a8">
+<i data-lucide="download"></i>
+<span>Export</span>
+<small>Excel / PDF / CSV</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="adminFeatures" value="Settings" id="a9">
+<label for="a9">
+<i data-lucide="settings"></i>
+<span>Settings</span>
+<small>System controls</small>
+</label>
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<div class="field">
+
+<label>
+Other Admin Requirements
+</label>
+
+<textarea
+name="adminOther"
+placeholder="Describe special controls, approvals, dashboards or administrative functions."
+></textarea>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+06 CLIENT
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Client App Requirements
+</h2>
+
+<p>
+What should your customers or clients be able to do?
+</p>
+
+</div>
+
+
+<div class="option-grid">
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Login" id="c1">
+<label for="c1">
+<i data-lucide="log-in"></i>
+<span>Login</span>
+<small>Secure access</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Profile" id="c2">
+<label for="c2">
+<i data-lucide="circle-user"></i>
+<span>Profile</span>
+<small>Personal details</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Service Request" id="c3">
+<label for="c3">
+<i data-lucide="send"></i>
+<span>Service Request</span>
+<small>Submit requests</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Document Upload" id="c4">
+<label for="c4">
+<i data-lucide="upload"></i>
+<span>Documents</span>
+<small>Upload files</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Status Tracking" id="c5">
+<label for="c5">
+<i data-lucide="route"></i>
+<span>Status Tracking</span>
+<small>Track progress</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Payments" id="c6">
+<label for="c6">
+<i data-lucide="wallet-cards"></i>
+<span>Payments</span>
+<small>Pay online</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Notifications" id="c7">
+<label for="c7">
+<i data-lucide="bell"></i>
+<span>Notifications</span>
+<small>Updates</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Chat" id="c8">
+<label for="c8">
+<i data-lucide="message-circle"></i>
+<span>Chat</span>
+<small>Support</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="clientFeatures" value="Downloads" id="c9">
+<label for="c9">
+<i data-lucide="file-down"></i>
+<span>Downloads</span>
+<small>Reports & files</small>
+</label>
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<div class="field">
+
+<label>
+Describe the ideal client experience
+</label>
+
+<textarea
+name="clientExperience"
+placeholder="Example: Client logs in → sees pending services → uploads documents → tracks status → receives completion notification."
+></textarea>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+07 TRACKING
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Work & Status Tracking
+</h2>
+
+<p>
+Define how requests and work should move through your organization.
+</p>
+
+</div>
+
+
+<div class="field-grid">
+
+
+<div class="field">
+
+<label>
+Who creates a new request?
+</label>
+
+<select name="requestCreator">
+
+<option value="">Select</option>
+
+<option>Admin</option>
+<option>Manager</option>
+<option>Employee</option>
+<option>Client</option>
+<option>Any User</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Who assigns the work?
+</label>
+
+<select name="workAssigner">
+
+<option value="">Select</option>
+
+<option>Admin</option>
+<option>Manager</option>
+<option>Automatic Assignment</option>
+<option>Not Required</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<h3>
+Suggested Status Flow
+</h3>
+
+
+<div class="status-flow">
+
+<div class="status-pill">New</div>
+<div class="arrow">→</div>
+<div class="status-pill">Assigned</div>
+<div class="arrow">→</div>
+<div class="status-pill">In Progress</div>
+<div class="arrow">→</div>
+<div class="status-pill">Under Review</div>
+<div class="arrow">→</div>
+<div class="status-pill">Completed</div>
+
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<div class="field-grid">
+
+
+<div class="field">
+
+<label>
+Need Due Date Tracking?
+</label>
+
+<select name="dueDate">
+<option>Yes</option>
+<option>No</option>
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Need Priority?
+</label>
+
+<select name="priority">
+<option>Yes</option>
+<option>No</option>
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Need Employee Assignment?
+</label>
+
+<select name="assignment">
+<option>Yes</option>
+<option>No</option>
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Client-visible Status?
+</label>
+
+<select name="clientStatus">
+<option>Yes</option>
+<option>No</option>
+</select>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Describe your tracking requirements
+</label>
+
+<textarea
+name="trackingRequirements"
+placeholder="What information should be visible while a job/request is being processed?"
+></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+08 INTEGRATIONS
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Integrations & Automation
+</h2>
+
+<p>
+Select external services or systems that should connect with the app.
+</p>
+
+</div>
+
+
+<div class="option-grid">
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="WhatsApp" id="i1">
+<label for="i1">
+<i data-lucide="message-circle"></i>
+<span>WhatsApp</span>
+<small>Messages & alerts</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="Email" id="i2">
+<label for="i2">
+<i data-lucide="mail"></i>
+<span>Email</span>
+<small>Email automation</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="SMS" id="i3">
+<label for="i3">
+<i data-lucide="smartphone"></i>
+<span>SMS</span>
+<small>Notifications</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="Google Sheets" id="i4">
+<label for="i4">
+<i data-lucide="table-2"></i>
+<span>Google Sheets</span>
+<small>Data management</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="Google Drive" id="i5">
+<label for="i5">
+<i data-lucide="hard-drive"></i>
+<span>Google Drive</span>
+<small>File storage</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="Payment Gateway" id="i6">
+<label for="i6">
+<i data-lucide="credit-card"></i>
+<span>Payment Gateway</span>
+<small>Online payments</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="UPI" id="i7">
+<label for="i7">
+<i data-lucide="qr-code"></i>
+<span>UPI</span>
+<small>QR / payment</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="API" id="i8">
+<label for="i8">
+<i data-lucide="braces"></i>
+<span>API</span>
+<small>External systems</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="integrations" value="Accounting Software" id="i9">
+<label for="i9">
+<i data-lucide="book-open"></i>
+<span>Accounting</span>
+<small>Accounting software</small>
+</label>
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<div class="field">
+
+<label>
+Other Integration / Automation Requirements
+</label>
+
+<textarea
+name="otherIntegrations"
+placeholder="Mention any software, API, service or automation you need."
+></textarea>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+09 REPORTS
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Reports & Business Intelligence
+</h2>
+
+<p>
+Tell us what information management needs to monitor.
+</p>
+
+</div>
+
+
+<div class="option-grid">
+
+
+<div class="option">
+<input type="checkbox" name="reports" value="Daily" id="r1">
+<label for="r1">
+<i data-lucide="calendar-days"></i>
+<span>Daily Report</span>
+<small>Daily activity</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="reports" value="Monthly" id="r2">
+<label for="r2">
+<i data-lucide="calendar-range"></i>
+<span>Monthly</span>
+<small>Monthly summary</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="reports" value="Client Wise" id="r3">
+<label for="r3">
+<i data-lucide="users-round"></i>
+<span>Client-wise</span>
+<small>Client performance</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="reports" value="Employee Wise" id="r4">
+<label for="r4">
+<i data-lucide="user-check"></i>
+<span>Employee-wise</span>
+<small>Staff performance</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="reports" value="Pending" id="r5">
+<label for="r5">
+<i data-lucide="clock-3"></i>
+<span>Pending</span>
+<small>Pending work</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="reports" value="Completed" id="r6">
+<label for="r6">
+<i data-lucide="circle-check"></i>
+<span>Completed</span>
+<small>Completed work</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="reports" value="Revenue" id="r7">
+<label for="r7">
+<i data-lucide="indian-rupee"></i>
+<span>Revenue</span>
+<small>Financial reports</small>
+</label>
+</div>
+
+
+<div class="option">
+<input type="checkbox" name="reports" value="Dashboard Analytics" id="r8">
+<label for="r8">
+<i data-lucide="chart-column-big"></i>
+<span>Analytics</span>
+<small>Visual dashboard</small>
+</label>
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<div class="field">
+
+<label>
+Other Reports Required
+</label>
+
+<textarea
+name="otherReports"
+placeholder="Mention specific reports, charts, KPIs or dashboards you need."
+></textarea>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+10 DESIGN
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Design & Brand Preferences
+</h2>
+
+<p>
+Tell us how you want your application to look and feel.
+These preferences will be used as a design direction.
+</p>
+
+</div>
+
+
+<!-- COLORS -->
+
+<div class="subsection" style="border-top:0;margin-top:0;padding-top:0;">
+
+<h3>
+Brand Colours
+</h3>
+
+
+<div class="color-row">
+
+
+<div class="color-box">
+
+<div class="color-box-title">
+
+<span>
+Primary Colour
+</span>
+
+</div>
+
+
+<div class="color-picker">
+
+<input
+type="color"
+id="primaryColorPicker"
+value="#16263F"
+>
+
+<input
+type="text"
+name="primaryColor"
+id="primaryColor"
+value="#16263F"
+placeholder="#16263F"
+>
+
+</div>
+
+</div>
+
+
+<div class="color-box">
+
+<div class="color-box-title">
+
+<span>
+Secondary Colour
+</span>
+
+</div>
+
+
+<div class="color-picker">
+
+<input
+type="color"
+id="secondaryColorPicker"
+value="#F4F5F7"
+>
+
+<input
+type="text"
+name="secondaryColor"
+id="secondaryColor"
+value="#F4F5F7"
+placeholder="#F4F5F7"
+>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- THEME -->
+
+<div class="subsection">
+
+<h3>
+Theme Preference
+</h3>
+
+
+<div class="choice-grid">
+
+
+<div class="choice">
+<input
+type="radio"
+name="themePreference"
+value="Light"
+id="theme1"
+checked
+>
+<label for="theme1">
+<i data-lucide="sun"></i>
+Light
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="themePreference"
+value="Dark"
+id="theme2"
+>
+<label for="theme2">
+<i data-lucide="moon"></i>
+Dark
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="themePreference"
+value="Both Light & Dark"
+id="theme3"
+>
+<label for="theme3">
+<i data-lucide="contrast"></i>
+Both
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="themePreference"
+value="No Preference"
+id="theme4"
+>
+<label for="theme4">
+<i data-lucide="circle-help"></i>
+No Preference
+</label>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- STYLE -->
+
+<div class="subsection">
+
+<h3>
+Overall Design Style
+</h3>
+
+
+<div class="choice-grid">
+
+
+<div class="choice">
+<input type="checkbox" name="designStyle" value="Minimal" id="style1">
+<label for="style1">
+<i data-lucide="minus"></i>
+Minimal
+</label>
+</div>
+
+
+<div class="choice">
+<input type="checkbox" name="designStyle" value="Corporate" id="style2">
+<label for="style2">
+<i data-lucide="building-2"></i>
+Corporate
+</label>
+</div>
+
+
+<div class="choice">
+<input type="checkbox" name="designStyle" value="Modern" id="style3">
+<label for="style3">
+<i data-lucide="sparkles"></i>
+Modern
+</label>
+</div>
+
+
+<div class="choice">
+<input type="checkbox" name="designStyle" value="Premium" id="style4">
+<label for="style4">
+<i data-lucide="gem"></i>
+Premium
+</label>
+</div>
+
+
+<div class="choice">
+<input type="checkbox" name="designStyle" value="Glassmorphism" id="style5">
+<label for="style5">
+<i data-lucide="layers"></i>
+Glassmorphism
+</label>
+</div>
+
+
+<div class="choice">
+<input type="checkbox" name="designStyle" value="Flat" id="style6">
+<label for="style6">
+<i data-lucide="square"></i>
+Flat
+</label>
+</div>
+
+
+<div class="choice">
+<input type="checkbox" name="designStyle" value="Material" id="style7">
+<label for="style7">
+<i data-lucide="blocks"></i>
+Material
+</label>
+</div>
+
+
+<div class="choice">
+<input type="checkbox" name="designStyle" value="Custom" id="style8">
+<label for="style8">
+<i data-lucide="palette"></i>
+Custom
+</label>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- BACKGROUND -->
+
+<div class="subsection">
+
+<h3>
+Background Preference
+</h3>
+
+
+<div class="choice-grid">
+
+
+<div class="choice">
+<input
+type="radio"
+name="backgroundPreference"
+value="White"
+id="bg1"
+checked
+>
+<label for="bg1">
+<i data-lucide="square"></i>
+White
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="backgroundPreference"
+value="Light Grey"
+id="bg2"
+>
+<label for="bg2">
+<i data-lucide="square-dashed"></i>
+Light Grey
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="backgroundPreference"
+value="Dark"
+id="bg3"
+>
+<label for="bg3">
+<i data-lucide="square-half"></i>
+Dark
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="backgroundPreference"
+value="Custom"
+id="bg4"
+>
+<label for="bg4">
+<i data-lucide="palette"></i>
+Custom
+</label>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- CARD -->
+
+<div class="subsection">
+
+<h3>
+Card & Button Style
+</h3>
+
+
+<div class="choice-grid">
+
+
+<div class="choice">
+<input
+type="radio"
+name="cardStyle"
+value="Square"
+id="card1"
+>
+<label for="card1">
+<i data-lucide="square"></i>
+Square
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="cardStyle"
+value="Slight Radius"
+id="card2"
+checked
+>
+<label for="card2">
+<i data-lucide="square-rounded"></i>
+Slight Radius
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="cardStyle"
+value="Rounded"
+id="card3"
+>
+<label for="card3">
+<i data-lucide="circle"></i>
+Rounded
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="cardStyle"
+value="No Preference"
+id="card4"
+>
+<label for="card4">
+<i data-lucide="circle-help"></i>
+No Preference
+</label>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ICON -->
+
+<div class="subsection">
+
+<h3>
+Icon Style
+</h3>
+
+
+<div class="choice-grid">
+
+
+<div class="choice">
+<input
+type="radio"
+name="iconStyle"
+value="Minimal Outline"
+id="icon1"
+checked
+>
+<label for="icon1">
+<i data-lucide="icons"></i>
+Minimal Outline
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="iconStyle"
+value="Filled"
+id="icon2"
+>
+<label for="icon2">
+<i data-lucide="circle"></i>
+Filled
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="iconStyle"
+value="Duotone"
+id="icon3"
+>
+<label for="icon3">
+<i data-lucide="layers-2"></i>
+Duotone
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="iconStyle"
+value="No Preference"
+id="icon4"
+>
+<label for="icon4">
+<i data-lucide="circle-help"></i>
+No Preference
+</label>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FONT -->
+
+<div class="subsection">
+
+<h3>
+Font Preference
+</h3>
+
+
+<div class="choice-grid">
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontPreference"
+value="Inter"
+id="font1"
+checked
+>
+<label for="font1">
+<i data-lucide="type"></i>
+Inter
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontPreference"
+value="DM Sans"
+id="font2"
+>
+<label for="font2">
+<i data-lucide="type"></i>
+DM Sans
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontPreference"
+value="Poppins"
+id="font3"
+>
+<label for="font3">
+<i data-lucide="type"></i>
+Poppins
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontPreference"
+value="Roboto"
+id="font4"
+>
+<label for="font4">
+<i data-lucide="type"></i>
+Roboto
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontPreference"
+value="Montserrat"
+id="font5"
+>
+<label for="font5">
+<i data-lucide="type"></i>
+Montserrat
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontPreference"
+value="No Preference"
+id="font6"
+>
+<label for="font6">
+<i data-lucide="circle-help"></i>
+No Preference
+</label>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FONT SIZE -->
+
+<div class="subsection">
+
+<h3>
+Typography Size
+</h3>
+
+
+<div class="choice-grid">
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontSizePreference"
+value="Compact"
+id="size1"
+>
+<label for="size1">
+<i data-lucide="text"></i>
+Compact
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontSizePreference"
+value="Standard"
+id="size2"
+checked
+>
+<label for="size2">
+<i data-lucide="text"></i>
+Standard
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontSizePreference"
+value="Large"
+id="size3"
+>
+<label for="size3">
+<i data-lucide="text"></i>
+Large
+</label>
+</div>
+
+
+<div class="choice">
+<input
+type="radio"
+name="fontSizePreference"
+value="No Preference"
+id="size4"
+>
+<label for="size4">
+<i data-lucide="circle-help"></i>
+No Preference
+</label>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- REFERENCES -->
+
+<div class="subsection">
+
+<div class="field-grid">
+
+
+<div class="field full">
+
+<label>
+Reference Apps / Websites You Like
+</label>
+
+<textarea
+name="referenceApps"
+placeholder="Example: Zoho, Notion, Apple, Stripe, Linear..."
+></textarea>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Design Inspiration Links
+</label>
+
+<textarea
+name="designLinks"
+placeholder="Paste website, app or Figma links."
+></textarea>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Design Styles / Colours to Avoid
+</label>
+
+<textarea
+name="avoidDesign"
+placeholder="Tell us what you do not want in the design."
+></textarea>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Special Design Instructions
+</label>
+
+<textarea
+name="designInstructions"
+placeholder="Any specific instructions regarding layout, logo, spacing, icons, colours or typography."
+></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+11 REVIEW
+============================================================ -->
+
+<section class="form-step">
+
+<div class="section-heading">
+
+<h2>
+Final Review
+</h2>
+
+<p>
+Review your requirements before submitting them to CM Developers.
+</p>
+
+</div>
+
+
+<div class="field-grid">
+
+<div class="field">
+
+<label>
+Application Name
+</label>
+
+<input
+name="appName"
+placeholder="Preferred application name"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Domain / Website
+</label>
+
+<input
+name="appDomain"
+placeholder="app.example.com"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Expected Launch Date
+</label>
+
+<input
+type="date"
+name="launchDate"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Project Priority
+</label>
+
+<select name="priorityLevel">
+
+<option>Normal</option>
+<option>High</option>
+<option>Urgent</option>
+
+</select>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Additional Requirements
+</label>
+
+<textarea
+name="additionalRequirements"
+placeholder="Anything else you want us to know?"
+></textarea>
+
+</div>
+
+
+<div class="field full">
+
+<label style="
+display:flex;
+flex-direction:row;
+align-items:flex-start;
+gap:8px;
+font-weight:500;
+">
+
+<input
+type="checkbox"
+required
+name="confirmation"
+style="
+width:16px;
+height:16px;
+margin-top:2px;
+flex-shrink:0;
+">
+
+<span>
+I confirm that the information provided is accurate to
+the best of my knowledge and represents our current
+application requirements.
+</span>
+
+</label>
+
+</div>
+
+</div>
+
+
+<div class="subsection">
+
+<h3>
+Requirement Summary
+</h3>
+
+<div
+class="review-grid"
+id="reviewContainer">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ============================================================
+SUCCESS
+============================================================ -->
+
+<section
+class="form-step"
+id="successStep"
+>
+
+<div class="success">
+
+<div class="success-icon">
+
+<i
+data-lucide="check"
+size="31">
+</i>
+
+</div>
+
+
+<h2>
+Request Submitted
+</h2>
+
+
+<p>
+Your application requirements have been successfully
+submitted to <strong>CM Developers</strong>.
+</p>
+
+
+<div class="reference">
+
+<span>
+Submission ID
+</span>
+
+<strong id="referenceId">
+DEV/000000/4001
+</strong>
+
+</div>
+
+
+<div class="success-actions">
+
+<button
+type="button"
+class="btn btn-success"
+id="downloadPdfBtn"
+>
+
+<i
+data-lucide="download"
+size="16">
+</i>
+
+Download Filled Form (PDF)
+
+</button>
+
+</div>
+
+
+<p style="
+margin-top:18px;
+font-size:10px;
+">
+
+Please keep your Submission ID for future
+communication with CM Developers.
+
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ACTIONS -->
+
+<div
+class="form-actions"
+id="formActions"
+>
+
+<button
+type="button"
+class="btn btn-outline"
+id="backBtn"
+onclick="previousStep()"
+>
+
+<i
+data-lucide="arrow-left"
+size="16">
+</i>
+
+Back
+
+</button>
+
+
+<button
+type="button"
+class="btn btn-primary"
+id="nextBtn"
+onclick="handleNext()"
+>
+
+Next
+
+<i
+data-lucide="arrow-right"
+size="16">
+</i>
+
+</button>
+
+</div>
+
+
+</div>
+
+</form>
+
+</main>
+
+
+<footer class="footer">
+
+CM Developers · App Requirement & Business Workflow
+
+</footer>
+
+
+<!-- ============================================================
+JAVASCRIPT
+============================================================ -->
+
+<script type="module">
+
+import {
+    db,
+    doc,
+    runTransaction,
+    collection,
+    serverTimestamp
+} from "./js/firebase-config.js";
+
+
+const { jsPDF } = window.jspdf;
+
+
+/* =========================
+INITIAL
+========================= */
+
+lucide.createIcons();
+
+
+const steps =
+    document.querySelectorAll(".form-step");
+
+const navSteps =
+    document.querySelectorAll(".step");
+
+const stepNames = [
+
+    "01 · Business",
+    "02 · Workflow",
+    "03 · Application",
+    "04 · Users",
+    "05 · Admin",
+    "06 · Client",
+    "07 · Tracking",
+    "08 · Integrations",
+    "09 · Reports",
+    "10 · Design",
+    "11 · Review"
+
+];
+
+
+let currentStep = 0;
+
+let submittedData = null;
+
+
+/* =========================
+DATE CODE
+========================= */
+
+function getDateCode(){
+
+    const now = new Date();
+
+    const yy =
+        String(
+            now.getFullYear()
+        ).slice(-2);
+
+    const mm =
+        String(
+            now.getMonth()+1
+        ).padStart(2,"0");
+
+    const dd =
+        String(
+            now.getDate()
+        ).padStart(2,"0");
+
+    return yy + mm + dd;
+
+}
+
+
+/* =========================
+SUBMISSION ID
+========================= */
+
+async function createSubmissionId(){
+
+    const dateCode =
+        getDateCode();
+
+
+    const counterRef =
+        doc(
+            db,
+            "developerCounters",
+            dateCode
+        );
+
+
+    const number =
+        await runTransaction(
+            db,
+            async transaction => {
+
+                const snapshot =
+                    await transaction.get(
+                        counterRef
+                    );
+
+
+                let nextNumber = 4001;
+
+
+                if(snapshot.exists()){
+
+                    nextNumber =
+                        Number(
+                            snapshot.data()
+                            .lastNumber || 4000
+                        ) + 1;
+
+                }
+
+
+                transaction.set(
+                    counterRef,
+                    {
+                        lastNumber:nextNumber,
+                        updatedAt:serverTimestamp()
+                    },
+                    {
+                        merge:true
+                    }
+                );
+
+
+                return nextNumber;
+
+            }
+        );
+
+
+    return `DEV/${dateCode}/${number}`;
+
+}
+
+
+/* =========================
+FORM DATA
+========================= */
+
+function getFormDataObject(){
+
+    const form =
+        document.getElementById(
+            "requirementForm"
+        );
+
+
+    const fd =
+        new FormData(form);
+
+
+    const data = {};
+
+
+    for(
+        const [key,value]
+        of fd.entries()
+    ){
+
+        if(key === "confirmation")
+            continue;
+
+
+        if(key.endsWith("[]")){
+
+            if(!data[key])
+                data[key] = [];
+
+
+            data[key].push(value);
+
+        }
+
+        else{
+
+            if(data[key]){
+
+                if(!Array.isArray(
+                    data[key]
+                )){
+
+                    data[key] =
+                        [data[key]];
+
+                }
+
+
+                data[key].push(value);
+
+            }
+
+            else{
+
+                data[key] = value;
+
+            }
+
+        }
+
+    }
+
+
+    return data;
+
+}
+
+
+/* =========================
+FIREBASE
+========================= */
+
+async function saveToFirebase(){
+
+    const data =
+        getFormDataObject();
+
+
+    const submissionId =
+        await createSubmissionId();
+
+
+    data.submissionId =
+        submissionId;
+
+
+    data.pageName =
+        "CM Developers";
+
+
+    data.formType =
+        "App Requirement & Business Workflow";
+
+
+    data.createdAt =
+        serverTimestamp();
+
+
+    const newDoc =
+        doc(
+            collection(
+                db,
+                "appRequirements"
+            )
+        );
+
+
+    await runTransaction(
+        db,
+        async transaction => {
+
+            transaction.set(
+                newDoc,
+                data
+            );
+
+        }
+    );
+
+
+    return data;
+
+}
+
+
+/* =========================
+VALIDATION
+========================= */
+
+function validateCurrentStep(){
+
+    const fields =
+        steps[currentStep]
+        .querySelectorAll(
+            "input[required],select[required],textarea[required]"
+        );
+
+
+    for(
+        const field
+        of fields
+    ){
+
+        if(!field.checkValidity()){
+
+            field.reportValidity();
+
+            return false;
+
+        }
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================
+UPDATE STEP
+========================= */
+
+function updateStep(){
+
+    steps.forEach(
+        (step,index)=>{
+
+            step.classList.toggle(
+                "active",
+                index === currentStep
+            );
+
+        }
+    );
+
+
+    navSteps.forEach(
+        (step,index)=>{
+
+            step.classList.remove(
+                "active"
+            );
+
+
+            if(index === currentStep){
+
+                step.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            if(index < currentStep){
+
+                step.classList.add(
+                    "completed"
+                );
+
+            }
+
+        }
+    );
+
+
+    const percent =
+        Math.round(
+            ((currentStep+1)/11)*100
+        );
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        percent + "%";
+
+
+    document.getElementById(
+        "progressPercent"
+    ).textContent =
+        percent + "%";
+
+
+    document.getElementById(
+        "progressTitle"
+    ).textContent =
+        stepNames[currentStep];
+
+
+    document.getElementById(
+        "backBtn"
+    ).style.visibility =
+        currentStep === 0
+            ? "hidden"
+            : "visible";
+
+
+    const nextButton =
+        document.getElementById(
+            "nextBtn"
+        );
+
+
+    if(currentStep === 10){
+
+        nextButton.innerHTML = `
+            <i data-lucide="send" size="16"></i>
+            Submit Requirements
+        `;
+
+
+        generateReview();
+
+    }
+
+    else{
+
+        nextButton.innerHTML = `
+            Next
+            <i data-lucide="arrow-right" size="16"></i>
+        `;
+
+    }
+
+
+    lucide.createIcons();
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================
+NEXT
+========================= */
+
+window.handleNext =
+async function(){
+
+    if(!validateCurrentStep())
+        return;
+
+
+    if(currentStep === 10){
+
+        await submitForm();
+
+        return;
+
+    }
+
+
+    currentStep++;
+
+    updateStep();
+
+};
+
+
+/* =========================
+BACK
+========================= */
+
+window.previousStep =
+function(){
+
+    if(currentStep === 0)
+        return;
+
+
+    currentStep--;
+
+    updateStep();
+
+};
+
+
+/* =========================
+WORKFLOW ADD
+========================= */
+
+window.addFlow =
+function(){
+
+    const list =
+        document.getElementById(
+            "flowList"
+        );
+
+
+    const number =
+        list.children.length+1;
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "flow-item";
+
+
+    item.innerHTML = `
+
+        <div class="flow-index">
+            ${number}
+        </div>
+
+        <input
+            name="flow[]"
+            placeholder="Describe this workflow step"
+        >
+
+        <button
+            type="button"
+            class="remove-flow"
+        >
+            ×
+        </button>
+
+    `;
+
+
+    item.querySelector(
+        ".remove-flow"
+    ).onclick =
+        function(){
+
+            removeFlow(this);
+
+        };
+
+
+    list.appendChild(item);
+
+};
+
+
+/* =========================
+WORKFLOW REMOVE
+========================= */
+
+window.removeFlow =
+function(button){
+
+    const list =
+        document.getElementById(
+            "flowList"
+        );
+
+
+    if(list.children.length <= 1)
+        return;
+
+
+    button.parentElement.remove();
+
+
+    [...list.children]
+    .forEach(
+        (item,index)=>{
+
+            item.querySelector(
+                ".flow-index"
+            ).textContent =
+                index+1;
+
+        }
+    );
+
+};
+
+
+/* =========================
+VALUE
+========================= */
+
+function getValue(name){
+
+    const element =
+        document.querySelector(
+            `[name="${name}"]`
+        );
+
+
+    if(!element)
+        return "Not specified";
+
+
+    return element.value ||
+        "Not specified";
+
+}
+
+
+/* =========================
+SELECTED
+========================= */
+
+function getSelected(name){
+
+    return [
+        ...document.querySelectorAll(
+            `input[name="${name}"]:checked`
+        )
+    ]
+    .map(
+        input => input.value
+    )
+    .join(", ") ||
+    "Not specified";
+
+}
+
+
+/* =========================
+ESCAPE
+========================= */
+
+function escapeHTML(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+REVIEW
+========================= */
+
+function generateReview(){
+
+    const container =
+        document.getElementById(
+            "reviewContainer"
+        );
+
+
+    container.innerHTML = `
+
+<div class="review-card">
+
+<h4>Business</h4>
+
+<div class="review-line">
+<span>Company</span>
+<span>${escapeHTML(
+getValue("companyName")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Contact</span>
+<span>${escapeHTML(
+getValue("contactPerson")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Mobile</span>
+<span>${escapeHTML(
+getValue("mobile")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Email</span>
+<span>${escapeHTML(
+getValue("email")
+)}</span>
+</div>
+
+</div>
+
+
+<div class="review-card">
+
+<h4>Application</h4>
+
+<div class="review-line">
+<span>Modules</span>
+<span>${escapeHTML(
+getSelected("modules")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Users</span>
+<span>${escapeHTML(
+getSelected("users")
+)}</span>
+</div>
+
+</div>
+
+
+<div class="review-card">
+
+<h4>Admin</h4>
+
+<div class="review-line">
+<span>Features</span>
+<span>${escapeHTML(
+getSelected("adminFeatures")
+)}</span>
+</div>
+
+</div>
+
+
+<div class="review-card">
+
+<h4>Client</h4>
+
+<div class="review-line">
+<span>Features</span>
+<span>${escapeHTML(
+getSelected("clientFeatures")
+)}</span>
+</div>
+
+</div>
+
+
+<div class="review-card">
+
+<h4>Tracking</h4>
+
+<div class="review-line">
+<span>Creator</span>
+<span>${escapeHTML(
+getValue("requestCreator")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Assigner</span>
+<span>${escapeHTML(
+getValue("workAssigner")
+)}</span>
+</div>
+
+</div>
+
+
+<div class="review-card">
+
+<h4>Integrations</h4>
+
+<div class="review-line">
+<span>Selected</span>
+<span>${escapeHTML(
+getSelected("integrations")
+)}</span>
+</div>
+
+</div>
+
+
+<div class="review-card">
+
+<h4>Reports</h4>
+
+<div class="review-line">
+<span>Selected</span>
+<span>${escapeHTML(
+getSelected("reports")
+)}</span>
+</div>
+
+</div>
+
+
+<div class="review-card">
+
+<h4>Design</h4>
+
+<div class="review-line">
+<span>Theme</span>
+<span>${escapeHTML(
+getSelectedRadio("themePreference")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Style</span>
+<span>${escapeHTML(
+getSelected("designStyle")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Font</span>
+<span>${escapeHTML(
+getSelectedRadio("fontPreference")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Icons</span>
+<span>${escapeHTML(
+getSelectedRadio("iconStyle")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Card Style</span>
+<span>${escapeHTML(
+getSelectedRadio("cardStyle")
+)}</span>
+</div>
+
+</div>
+
+
+<div class="review-card">
+
+<h4>Final</h4>
+
+<div class="review-line">
+<span>App Name</span>
+<span>${escapeHTML(
+getValue("appName")
+)}</span>
+</div>
+
+<div class="review-line">
+<span>Launch</span>
+<span>${escapeHTML(
+getValue("launchDate")
+)}</span>
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================
+RADIO
+========================= */
+
+function getSelectedRadio(name){
+
+    const input =
+        document.querySelector(
+            `input[name="${name}"]:checked`
+        );
+
+
+    return input
+        ? input.value
+        : "Not specified";
+
+}
+
+
+/* =========================
+COLOR SYNC
+========================= */
+
+const primaryPicker =
+    document.getElementById(
+        "primaryColorPicker"
+    );
+
+const primaryText =
+    document.getElementById(
+        "primaryColor"
+    );
+
+
+primaryPicker.addEventListener(
+    "input",
+    () => {
+
+        primaryText.value =
+            primaryPicker.value;
+
+    }
+);
+
+
+primaryText.addEventListener(
+    "input",
+    () => {
+
+        if(
+            /^#[0-9A-Fa-f]{6}$/
+            .test(primaryText.value)
+        ){
+
+            primaryPicker.value =
+                primaryText.value;
+
+        }
+
+    }
+);
+
+
+const secondaryPicker =
+    document.getElementById(
+        "secondaryColorPicker"
+    );
+
+const secondaryText =
+    document.getElementById(
+        "secondaryColor"
+    );
+
+
+secondaryPicker.addEventListener(
+    "input",
+    () => {
+
+        secondaryText.value =
+            secondaryPicker.value;
+
+    }
+);
+
+
+secondaryText.addEventListener(
+    "input",
+    () => {
+
+        if(
+            /^#[0-9A-Fa-f]{6}$/
+            .test(secondaryText.value)
+        ){
+
+            secondaryPicker.value =
+                secondaryText.value;
+
+        }
+
+    }
+);
+
+
+/* =========================
+IMAGE TO DATA URL
+========================= */
+
+async function imageToDataURL(src){
+
+    const response =
+        await fetch(src);
+
+
+    if(!response.ok)
+        throw new Error(
+            "Unable to load image"
+        );
+
+
+    const blob =
+        await response.blob();
+
+
+    return new Promise(
+        resolve => {
+
+            const reader =
+                new FileReader();
+
+
+            reader.onloadend =
+                () => resolve(
+                    reader.result
+                );
+
+
+            reader.readAsDataURL(
+                blob
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+PDF
+========================= */
+
+async function generatePDF(data){
+
+    const pdf =
+        new jsPDF({
+            orientation:"portrait",
+            unit:"mm",
+            format:"a4"
+        });
+
+
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+
+    const margin = 15;
+
+
+    /* LOGO */
+
+    try{
+
+        const logo =
+            await imageToDataURL(
+                "assets/logo.png"
+            );
+
+
+        pdf.addImage(
+            logo,
+            "PNG",
+            margin,
+            10,
+            18,
+            18
+        );
+
+    }catch(e){}
+
+
+    /* NAME */
+
+    try{
+
+        const name =
+            await imageToDataURL(
+                "assets/name.png"
+            );
+
+
+        pdf.addImage(
+            name,
+            "PNG",
+            37,
+            12,
+            55,
+            14
+        );
+
+    }catch(e){
+
+        pdf.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        pdf.setFontSize(17);
+
+        pdf.setTextColor(
+            22,
+            38,
+            63
+        );
+
+        pdf.text(
+            "CM Developers",
+            37,
+            23
+        );
+
+    }
+
+
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    pdf.setFontSize(8);
+
+    pdf.setTextColor(
+        105,
+        113,
+        124
+    );
+
+
+    pdf.text(
+        "APP REQUIREMENT & BUSINESS WORKFLOW",
+        margin,
+        34
+    );
+
+
+    pdf.setDrawColor(
+        220,
+        224,
+        229
+    );
+
+
+    pdf.line(
+        margin,
+        38,
+        pageWidth-margin,
+        38
+    );
+
+
+    let y = 49;
+
+
+    /* TITLE */
+
+    pdf.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    pdf.setFontSize(18);
+
+    pdf.setTextColor(
+        22,
+        38,
+        63
+    );
+
+
+    pdf.text(
+        "Application Requirement Form",
+        margin,
+        y
+    );
+
+
+    y += 8;
+
+
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    pdf.setFontSize(9);
+
+    pdf.setTextColor(
+        90,
+        98,
+        108
+    );
+
+
+    pdf.text(
+        `Submission ID: ${data.submissionId}`,
+        margin,
+        y
+    );
+
+
+    y += 12;
+
+
+    function section(title){
+
+        if(y > pageHeight-30){
+
+            pdf.addPage();
+
+            y = 20;
+
+        }
+
+
+        pdf.setFillColor(
+            244,
+            246,
+            248
+        );
+
+
+        pdf.rect(
+            margin,
+            y-5,
+            pageWidth-(margin*2),
+            9,
+            "F"
+        );
+
+
+        pdf.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        pdf.setFontSize(10);
+
+        pdf.setTextColor(
+            22,
+            38,
+            63
+        );
+
+
+        pdf.text(
+            title,
+            margin+3,
+            y+1
+        );
+
+
+        y += 10;
+
+    }
+
+
+    function field(label,value){
+
+        if(
+            value === undefined ||
+            value === null ||
+            value === "" ||
+            value === "Not specified"
+        )
+            return;
+
+
+        const text =
+            Array.isArray(value)
+                ? value.join(", ")
+                : String(value);
+
+
+        const lines =
+            pdf.splitTextToSize(
+                text,
+                pageWidth-75
+            );
+
+
+        if(
+            y+(lines.length*5)
+            >
+            pageHeight-25
+        ){
+
+            pdf.addPage();
+
+            y=20;
+
+        }
+
+
+        pdf.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        pdf.setFontSize(8);
+
+        pdf.setTextColor(
+            100,
+            108,
+            118
+        );
+
+
+        pdf.text(
+            label,
+            margin,
+            y
+        );
+
+
+        pdf.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        pdf.setTextColor(
+            30,
+            36,
+            44
+        );
+
+
+        pdf.text(
+            lines,
+            60,
+            y
+        );
+
+
+        y +=
+            Math.max(
+                6,
+                lines.length*5
+            );
+
+    }
+
+
+    /* BUSINESS */
+
+    section(
+        "01  Business & Contact"
+    );
+
+    field("Company",data.companyName);
+    field("Business Type",data.businessType);
+    field("Contact Person",data.contactPerson);
+    field("Designation",data.designation);
+    field("Mobile",data.mobile);
+    field("Email",data.email);
+    field("WhatsApp",data.whatsapp);
+    field("Website",data.website);
+    field("Industry",data.industry);
+    field("Branches",data.branches);
+    field("Description",data.businessDescription);
+
+
+    /* WORKFLOW */
+
+    section(
+        "02  Current Workflow"
+    );
+
+    field("Current Workflow",data.currentWorkflow);
+    field("Problems",data.problems);
+    field("Automation",data.automation);
+    field("Current Software",data.currentSoftware);
+    field("Data Source",data.dataSource);
+    field("Workflow Steps",data["flow[]"]);
+
+
+    /* APPLICATION */
+
+    section(
+        "03  Application"
+    );
+
+    field("Modules",data.modules);
+    field("Other Modules",data.otherModules);
+
+
+    /* USERS */
+
+    section(
+        "04  Users & Permissions"
+    );
+
+    field("User Types",data.users);
+    field("Total Users",data.totalUsers);
+    field("Admin Users",data.adminUsers);
+    field("Permissions",data.permissions);
+
+
+    /* ADMIN */
+
+    section(
+        "05  Admin Panel"
+    );
+
+    field("Admin Features",data.adminFeatures);
+    field("Other Admin",data.adminOther);
+
+
+    /* CLIENT */
+
+    section(
+        "06  Client App"
+    );
+
+    field("Client Features",data.clientFeatures);
+    field("Client Experience",data.clientExperience);
+
+
+    /* TRACKING */
+
+    section(
+        "07  Tracking"
+    );
+
+    field("Request Creator",data.requestCreator);
+    field("Work Assigner",data.workAssigner);
+    field("Due Date",data.dueDate);
+    field("Priority",data.priority);
+    field("Employee Assignment",data.assignment);
+    field("Client Status",data.clientStatus);
+    field("Tracking Requirements",data.trackingRequirements);
+
+
+    /* INTEGRATIONS */
+
+    section(
+        "08  Integrations"
+    );
+
+    field("Integrations",data.integrations);
+    field("Other Integrations",data.otherIntegrations);
+
+
+    /* REPORTS */
+
+    section(
+        "09  Reports"
+    );
+
+    field("Reports",data.reports);
+    field("Other Reports",data.otherReports);
+
+
+    /* DESIGN */
+
+    section(
+        "10  Design & Brand"
+    );
+
+    field("Primary Colour",data.primaryColor);
+    field("Secondary Colour",data.secondaryColor);
+    field("Theme",data.themePreference);
+    field("Design Style",data.designStyle);
+    field("Background",data.backgroundPreference);
+    field("Card Style",data.cardStyle);
+    field("Icon Style",data.iconStyle);
+    field("Font",data.fontPreference);
+    field("Typography Size",data.fontSizePreference);
+    field("Reference Apps",data.referenceApps);
+    field("Design Links",data.designLinks);
+    field("Avoid",data.avoidDesign);
+    field("Design Instructions",data.designInstructions);
+
+
+    /* FINAL */
+
+    section(
+        "11  Final Requirements"
+    );
+
+    field("Application Name",data.appName);
+    field("Domain",data.appDomain);
+    field("Launch Date",data.launchDate);
+    field("Priority",data.priorityLevel);
+    field("Additional Requirements",data.additionalRequirements);
+
+
+    /* FOOTER */
+
+    const totalPages =
+        pdf.internal.getNumberOfPages();
+
+
+    for(
+        let page=1;
+        page<=totalPages;
+        page++
+    ){
+
+        pdf.setPage(page);
+
+        pdf.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        pdf.setFontSize(7);
+
+        pdf.setTextColor(
+            130,
+            137,
+            145
+        );
+
+
+        pdf.text(
+            "CM Developers",
+            margin,
+            pageHeight-8
+        );
+
+
+        pdf.text(
+            data.submissionId,
+            pageWidth-margin,
+            pageHeight-8,
+            {
+                align:"right"
+            }
+        );
+
+    }
+
+
+    pdf.save(
+        `${data.submissionId.replaceAll("/","-")}-CM-Developers.pdf`
+    );
+
+}
+
+
+/* =========================
+SUBMIT
+========================= */
+
+async function submitForm(){
+
+    const form =
+        document.getElementById(
+            "requirementForm"
+        );
+
+
+    if(!form.checkValidity()){
+
+        form.reportValidity();
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "nextBtn"
+        );
+
+
+    button.disabled = true;
+
+
+    button.innerHTML = `
+        <i data-lucide="loader-circle" size="16"></i>
+        Submitting...
+    `;
+
+
+    lucide.createIcons();
+
+
+    try{
+
+        submittedData =
+            await saveToFirebase();
+
+
+        document.getElementById(
+            "referenceId"
+        ).textContent =
+            submittedData.submissionId;
+
+
+        steps[currentStep]
+            .classList.remove(
+                "active"
+            );
+
+
+        document.getElementById(
+            "successStep"
+        ).classList.add(
+            "active"
+        );
+
+
+        document.getElementById(
+            "formActions"
+        ).style.display =
+            "none";
+
+
+        navSteps.forEach(
+            step => {
+
+                step.classList.add(
+                    "completed"
+                );
+
+                step.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+        document.getElementById(
+            "progressFill"
+        ).style.width =
+            "100%";
+
+
+        document.getElementById(
+            "progressPercent"
+        ).textContent =
+            "100%";
+
+
+        document.getElementById(
+            "progressTitle"
+        ).textContent =
+            "Request Submitted";
+
+
+        lucide.createIcons();
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "Unable to submit the form. Please check your connection and try again."
+        );
+
+
+        button.disabled = false;
+
+
+        button.innerHTML = `
+            <i data-lucide="send" size="16"></i>
+            Submit Requirements
+        `;
+
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+/* =========================
+PDF BUTTON
+========================= */
+
+document.getElementById(
+    "downloadPdfBtn"
+).addEventListener(
+    "click",
+    async function(){
+
+        if(!submittedData)
+            return;
+
+
+        const button =
+            this;
+
+
+        button.disabled = true;
+
+
+        button.innerHTML = `
+            <i data-lucide="loader-circle" size="16"></i>
+            Preparing PDF...
+        `;
+
+
+        lucide.createIcons();
+
+
+        try{
+
+            await generatePDF(
+                submittedData
+            );
+
+        }
+        catch(error){
+
+            console.error(error);
+
+            alert(
+                "Unable to generate the PDF."
+            );
+
+        }
+
+
+        button.disabled = false;
+
+
+        button.innerHTML = `
+            <i data-lucide="download" size="16"></i>
+            Download Filled Form (PDF)
+        `;
+
+
+        lucide.createIcons();
+
+    }
+);
+
+
+/* =========================
+START
+========================= */
+
+updateStep();
+
+</script>
+
+</body>
+</html>
