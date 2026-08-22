@@ -15,7 +15,7 @@
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
 
-<!-- Replace jsPDF CDN -->
+<!-- jsPDF via jsDelivr -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <style>
@@ -272,7 +272,7 @@ body.client-form-page{
     box-shadow:0 0 0 3px rgba(22,38,63,.06);
 }
 
-/* Option Cards (Selection fixed) */
+/* Option Grids */
 .client-option-grid {
     display: grid !important;
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -334,7 +334,7 @@ label.client-option:has(input:checked) span svg {
     color: var(--dev-navy) !important;
 }
 
-/* Choice Cards (Design Tab Radios/Checks) */
+/* Choice Cards */
 .client-choice-grid {
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
@@ -661,9 +661,9 @@ label.client-choice:has(input:checked) {
 
 <header class="client-form-header">
     <div class="client-brand">
-        <img class="client-brand-logo" src="assets/logo.png" alt="CM Developers">
+        <img class="client-brand-logo" src="assets/logo.png" alt="CM Developers" onerror="this.style.display='none'">
         <div>
-            <img class="client-brand-name" src="assets/name.png" alt="CM Developers">
+            <img class="client-brand-name" src="assets/name.png" alt="CM Developers" onerror="this.style.display='none'">
             <div class="client-brand-subtitle">App Requirement & Business Workflow</div>
         </div>
     </div>
@@ -1121,7 +1121,7 @@ label.client-choice:has(input:checked) {
                     <div class="client-field full"><label>Additional Requirements</label><textarea name="additionalRequirements" placeholder="Anything else you want us to know?"></textarea></div>
                     <div class="client-field full">
                         <label style="display:flex;flex-direction:row;align-items:flex-start;gap:8px;font-weight:500;cursor:pointer">
-                            <input type="checkbox" required name="confirmation" style="width:16px;height:16px;margin-top:2px;flex:none">
+                            <input type="checkbox" required name="confirmation" id="confirmationBox" style="width:16px;height:16px;margin-top:2px;flex:none">
                             <span>I confirm that the information provided is accurate to the best of my knowledge and represents our current application requirements.</span>
                         </label>
                     </div>
@@ -1145,7 +1145,7 @@ label.client-choice:has(input:checked) {
         </div>
     </form>
 
-    <!-- SUCCESS STEP (PLACED OUTSIDE FORM TO AVOID GETTING HIDDEN ON SUBMISSION) -->
+    <!-- SUCCESS STEP -->
     <section class="client-success client-form-card" id="successStep">
         <div class="client-success-icon"><i data-lucide="check" width="31" height="31"></i></div>
         <h2>Request Submitted</h2>
@@ -1174,7 +1174,6 @@ label.client-choice:has(input:checked) {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// Firebase Initialization
 const firebaseConfig = {
     apiKey: "AIzaSyCXyKSTImIzkYnH2LW408cVWWV1CPvlFbO",
     authDomain: "cmfilings-6a37c.firebaseapp.com",
@@ -1188,7 +1187,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Form Management
 document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
 
@@ -1252,6 +1250,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function validateStep(index) {
+        hideAlert();
+
+        if (index === steps.length - 1) {
+            const confirmBox = document.getElementById("confirmationBox");
+            if (confirmBox && !confirmBox.checked) {
+                showAlert("Please accept the confirmation checkbox.");
+                confirmBox.focus();
+                return false;
+            }
+        }
+
         const requiredInputs = steps[index].querySelectorAll("input[required], select[required], textarea[required]");
         for (let input of requiredInputs) {
             if (input.type === "checkbox" && !input.checked) {
@@ -1275,11 +1284,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function handleFinalSubmission() {
+        hideAlert();
         nextBtn.disabled = true;
         nextBtn.innerHTML = `Submitting...`;
 
         const rawData = new FormData(form);
-        const generatedRefId = "Dev/" + Math.floor(100000 + Math.random() * 900000) + "/4001";
+        const randomCode = Math.floor(100000 + Math.random() * 900000);
+        const generatedRefId = `Dev/${randomCode}/4001`;
 
         const dataObj = {
             referenceId: generatedRefId,
@@ -1342,14 +1353,13 @@ document.addEventListener("DOMContentLoaded", () => {
             additionalRequirements: rawData.get("additionalRequirements") || ""
         };
 
-        savedFormData = dataObj;
-
         try {
             await addDoc(collection(db, "client_requirements"), dataObj);
         } catch (error) {
-            console.error("Firestore submission error:", error);
+            console.error("Firestore Error (saved locally as fallback):", error);
         }
 
+        savedFormData = dataObj;
         document.getElementById("referenceId").textContent = generatedRefId;
         form.style.display = "none";
         document.querySelector(".client-progress").style.display = "none";
@@ -1377,7 +1387,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Dynamic Step Flow List
+    // Dynamic Step Flow
     if (addFlowBtn && flowList) {
         addFlowBtn.addEventListener("click", () => {
             const nextIdx = flowList.querySelectorAll(".client-flow-item").length + 1;
@@ -1401,7 +1411,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Color Pickers Sync
+    // Color sync
     ["primary", "secondary"].forEach((name) => {
         const picker = document.getElementById(`${name}ColorPicker`);
         const text = document.getElementById(`${name}Color`);
@@ -1431,21 +1441,20 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
-        // Robust PDF Generator
+    // Universal Safe PDF Generator
     downloadPdfBtn.addEventListener("click", () => {
         if (!savedFormData) {
             alert("No saved form data available.");
             return;
         }
 
-        // Universal resolver for jsPDF
         const jsPDFConstructor = 
             (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF :
             (typeof window.jsPDF === "function") ? window.jsPDF :
             (window.jspdf && typeof window.jspdf === "function") ? window.jspdf : null;
 
         if (!jsPDFConstructor) {
-            alert("PDF engine failed to load. Please make sure you are connected to the internet or hosting via a web server (http://).");
+            alert("PDF library failed to load. Please make sure you are connected to the internet and access via https://.");
             return;
         }
 
@@ -1503,7 +1512,6 @@ document.addEventListener("DOMContentLoaded", () => {
         doc.text(`App Requirement Document · Ref ID: ${data.referenceId}`, margin, y);
         y += 22;
 
-        // 1. Business
         printHeader("1. Business & Contact Information");
         printRow("Company Name:", data.companyName);
         printRow("Business Type:", data.businessType);
@@ -1516,7 +1524,6 @@ document.addEventListener("DOMContentLoaded", () => {
         printRow("Description:", data.businessDescription);
         y += 8;
 
-        // 2. Workflow
         printHeader("2. Workflow & Automation");
         printRow("Current Process:", data.currentWorkflow);
         printRow("Existing Problems:", data.problems);
@@ -1528,7 +1535,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         y += 8;
 
-        // 3. Modules
         printHeader("3. Application Modules & Permissions");
         printRow("Selected Modules:", data.modules);
         printRow("Other Modules:", data.otherModules);
@@ -1538,7 +1544,6 @@ document.addEventListener("DOMContentLoaded", () => {
         printRow("Client Features:", data.clientFeatures);
         y += 8;
 
-        // 4. Tracking
         printHeader("4. Tracking, Integrations & Reports");
         printRow("Who Assigns Work:", data.workAssigner);
         printRow("Tracking Details:", data.trackingRequirements);
@@ -1546,7 +1551,6 @@ document.addEventListener("DOMContentLoaded", () => {
         printRow("Reports Needed:", data.reports);
         y += 8;
 
-        // 5. Design
         printHeader("5. Design & Final Preferences");
         printRow("Colours (Primary / Sec):", `${data.primaryColor} / ${data.secondaryColor}`);
         printRow("Theme & Font:", `${data.themePreference} | ${data.fontPreference}`);
@@ -1559,6 +1563,8 @@ document.addEventListener("DOMContentLoaded", () => {
         doc.save(`${fileName}_Requirements.pdf`);
     });
 
+    updateStep(0);
+}); // <-- Correctly closes DOMContentLoaded
 </script>
 
 </body>
