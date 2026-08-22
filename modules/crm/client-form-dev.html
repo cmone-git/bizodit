@@ -15,7 +15,6 @@
   <title>BIZODIT — Client Requirements</title>
 
   <style>
-    /* Table & Action Elements matching CM theme */
     .data-table {
       width: 100%;
       border-collapse: collapse;
@@ -270,7 +269,7 @@
         <div class="module-actions">
           <button class="btn btn-outline" onclick="window.print()"><i data-lucide="bar-chart-3"></i><span>Report</span></button>
           <button class="btn btn-secondary"><i data-lucide="settings-2"></i><span>Settings</span></button>
-          <button class="btn btn-primary" onclick="window.open('/','_blank')"><i data-lucide="plus"></i><span>New Form</span></button>
+          <button class="btn btn-primary" onclick="window.open('/modules/crm/client-form-dev.html','_blank')"><i data-lucide="plus"></i><span>New Form</span></button>
         </div>
       </section>
       
@@ -396,7 +395,6 @@
     import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
     import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-    // Initialize Navigation & System Dates
     try {
       if (typeof formatIndianDate === "function") document.getElementById("presentDate").textContent = formatIndianDate(new Date());
       if (typeof todayISO === "function") {
@@ -408,7 +406,6 @@
       document.getElementById("presentDate").textContent = new Date().toLocaleDateString('en-IN');
     }
 
-    // Verified Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCXyKSTlmlzkYnH2LW408cVVWV1CPvlfBo",
       authDomain: "cmfilings-6a37c.firebaseapp.com",
@@ -428,14 +425,12 @@
     let unsubscribeFirestore = null;
     let filterUrgent = false;
 
-    // Elements
     const tbody = document.getElementById("submissionsTableBody");
     const searchInput = document.getElementById("searchInput");
     const tableCount = document.getElementById("tableCount");
     const filterUrgentBtn = document.getElementById("filterUrgentBtn");
     const exportCsvBtn = document.getElementById("exportCsvBtn");
     
-    // Auth Elements
     const loginModal = document.getElementById("loginModal");
     const loginForm = document.getElementById("adminLoginForm");
     const authAlert = document.getElementById("authAlert");
@@ -448,7 +443,6 @@
     const logoutBtn = document.getElementById("logoutBtn");
     const avatarText = document.getElementById("avatarText");
 
-    // Modal Elements
     const modal = document.getElementById("detailModal");
     const closeModalBtn = document.getElementById("closeModalBtn");
     const modalBody = document.getElementById("modalBody");
@@ -465,14 +459,12 @@
       authAlert.style.display = "none";
     }
 
-    // Remember Me Auto-fill
     const savedEmail = localStorage.getItem("cm_admin_remember_email");
     if (savedEmail) {
       loginEmail.value = savedEmail;
       rememberMeCheckbox.checked = true;
     }
 
-    // Toggle Password Visibility
     togglePasswordBtn.addEventListener("click", () => {
       const isPassword = loginPassword.type === "password";
       loginPassword.type = isPassword ? "text" : "password";
@@ -480,7 +472,6 @@
       if (window.lucide) window.lucide.createIcons();
     });
 
-    // Password Reset
     forgotPasswordLink.addEventListener("click", async () => {
       const email = loginEmail.value.trim();
       if (!email) {
@@ -496,7 +487,6 @@
       }
     });
 
-    // Auth Observer
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loginModal.style.display = "none";
@@ -512,7 +502,6 @@
       }
     });
 
-    // Login Form Submit
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       hideAuthAlert();
@@ -533,7 +522,6 @@
 
     logoutBtn.addEventListener("click", () => signOut(auth));
 
-    // Render Submissions Table
     function renderTable(data) {
       tableCount.textContent = `${data.length} records`;
       if (data.length === 0) {
@@ -582,7 +570,6 @@
       }
     }
 
-    // Realtime Firestore listener
     function initFirestoreListener() {
       const q = query(collection(db, "client_requirements"), orderBy("submittedAt", "desc"));
       unsubscribeFirestore = onSnapshot(q, (snapshot) => {
@@ -623,7 +610,6 @@
       applyFilters();
     });
 
-    // CSV Export
     exportCsvBtn.addEventListener("click", () => {
       if (allSubmissions.length === 0) return alert("No data to export");
       const headers = ["Ref ID", "Company Name", "Contact Person", "Designation", "Mobile", "Email", "Priority", "Modules"];
@@ -647,7 +633,6 @@
       document.body.removeChild(link);
     });
 
-    // Details Modal
     function showDetails(item) {
       activeItem = item;
       modalTitle.textContent = item.companyName || "Company Requirements";
