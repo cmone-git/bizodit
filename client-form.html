@@ -1142,17 +1142,8 @@
     CM Developers · App Requirement & Business Workflow
 </footer>
 
-<!-- Existing application JS -->
+<!-- Use ES Module to import from your firebase-config.js -->
 <script type="module" src="js/form.js"></script>
-
-<!-- Client-form bridge.
-     It only initializes Lucide and exposes the expected hooks.
-     Form logic/submission/PDF can be handled by your existing form.js. -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    if (window.lucide) window.lucide.createIcons();
-});
-</script>
 
 </body>
 </html>
