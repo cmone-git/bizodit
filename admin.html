@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CM Developers | Admin Dashboard</title>
 
-<title>CM Developers | Client Submissions Admin</title>
-
-<!-- Fonts -->
+<!-- Inter -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,19 +14,15 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <style>
 :root {
     --dev-navy: #16263F;
-    --dev-navy-dark: #102039;
     --dev-bg: #F4F5F7;
-    --dev-card: #FFFFFF;
     --dev-text: #17202D;
     --dev-muted: #707985;
     --dev-border: #E1E5EA;
-    --dev-success: #2F8F62;
-    --dev-danger: #C74B4B;
     --dev-urgent: #E05656;
 }
 
@@ -40,7 +35,6 @@ body {
     min-height: 100vh;
 }
 
-/* Header */
 .admin-header {
     position: sticky;
     top: 0;
@@ -53,12 +47,7 @@ body {
     border-bottom: 1px solid var(--dev-border);
 }
 
-.admin-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
+.admin-brand { display: flex; align-items: center; gap: 10px; }
 .admin-logo {
     width: 32px;
     height: 32px;
@@ -71,21 +60,14 @@ body {
     font-weight: 700;
     font-size: 13px;
 }
+.admin-title { font-size: 15px; font-weight: 700; color: var(--dev-navy); }
 
-.admin-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--dev-navy);
-}
-
-/* Layout */
 .admin-container {
     max-width: 1200px;
     margin: 28px auto;
     padding: 0 20px;
 }
 
-/* Top Stats */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -106,12 +88,7 @@ body {
 .stat-card span { font-size: 11px; color: var(--dev-muted); font-weight: 500; }
 .stat-card strong { font-size: 24px; color: var(--dev-navy); font-weight: 700; }
 
-/* Control Bar */
-.admin-controls {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-}
+.admin-controls { display: flex; gap: 12px; margin-bottom: 16px; }
 
 .search-input {
     flex: 1;
@@ -125,9 +102,6 @@ body {
     background: #fff;
 }
 
-.search-input:focus { border-color: var(--dev-navy); }
-
-/* Table Container */
 .table-card {
     background: #fff;
     border: 1px solid var(--dev-border);
@@ -135,42 +109,16 @@ body {
     overflow-x: auto;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 12px;
-}
-
-th {
-    background: #FAFBFC;
-    color: var(--dev-muted);
-    font-weight: 600;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--dev-border);
-}
-
-td {
-    padding: 14px 16px;
-    border-bottom: 1px solid #F0F2F5;
-    vertical-align: middle;
-}
-
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
+th { background: #FAFBFC; color: var(--dev-muted); font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--dev-border); }
+td { padding: 14px 16px; border-bottom: 1px solid #F0F2F5; vertical-align: middle; }
 tr:hover td { background: #F8F9FA; }
 
-/* Badges */
-.badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 600;
-}
+.badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
 .badge-urgent { background: #FEE2E2; color: #991B1B; }
 .badge-high { background: #FEF3C7; color: #92400E; }
 .badge-normal { background: #E0E7FF; color: #3730A3; }
 
-/* Action Buttons */
 .btn-action {
     display: inline-flex;
     align-items: center;
@@ -187,7 +135,52 @@ tr:hover td { background: #F8F9FA; }
 }
 .btn-action:hover { background: #F4F5F7; }
 
-/* Modal View */
+/* Login Modal */
+.login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(16, 32, 57, 0.7);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.login-card {
+    background: #fff;
+    width: 100%;
+    max-width: 360px;
+    border-radius: 10px;
+    padding: 26px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.login-card h2 { font-size: 18px; margin-bottom: 6px; color: var(--dev-navy); }
+.login-card p { font-size: 12px; color: var(--dev-muted); margin-bottom: 20px; }
+.login-field { margin-bottom: 14px; }
+.login-field label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 5px; }
+.login-field input {
+    width: 100%;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--dev-border);
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+}
+.login-field input:focus { border-color: var(--dev-navy); }
+.login-btn {
+    width: 100%;
+    height: 40px;
+    background: var(--dev-navy);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* Detail Modal */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -199,7 +192,6 @@ tr:hover td { background: #F8F9FA; }
     padding: 20px;
 }
 .modal-overlay.active { display: flex; }
-
 .modal-content {
     background: #fff;
     border-radius: 10px;
@@ -208,32 +200,10 @@ tr:hover td { background: #F8F9FA; }
     max-height: 90vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 24px;
-    border-bottom: 1px solid var(--dev-border);
-}
-
-.modal-body {
-    padding: 24px;
-    overflow-y: auto;
-    font-size: 12px;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 14px 24px;
-    border-top: 1px solid var(--dev-border);
-    background: #FAFBFC;
-}
-
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--dev-border); }
+.modal-body { padding: 24px; overflow-y: auto; font-size: 12px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px; border-top: 1px solid var(--dev-border); background: #FAFBFC; }
 .detail-section { margin-bottom: 20px; }
 .detail-section h4 { color: var(--dev-navy); font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid var(--dev-border); padding-bottom: 4px; }
 .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -241,25 +211,43 @@ tr:hover td { background: #F8F9FA; }
 .detail-item span { color: var(--dev-muted); font-size: 10px; }
 .detail-item strong { font-size: 12px; }
 .detail-item.full { grid-column: 1 / -1; }
-
-@media (max-width: 768px) {
-    .stats-grid { grid-template-columns: 1fr; }
-    .detail-grid { grid-template-columns: 1fr; }
-}
 </style>
 </head>
 
 <body>
 
+<!-- Login Modal -->
+<div class="login-overlay" id="loginModal" style="display: none;">
+    <div class="login-card">
+        <h2>Admin Authentication</h2>
+        <p>Sign in to view submitted requirements.</p>
+        <form id="adminLoginForm">
+            <div class="login-field">
+                <label>Admin Email</label>
+                <input type="email" id="loginEmail" placeholder="admin@domain.com" required>
+            </div>
+            <div class="login-field">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <div id="loginError" style="color: red; font-size: 11px; margin-bottom: 10px; display: none;"></div>
+            <button type="submit" class="login-btn" id="loginSubmitBtn">Sign In</button>
+        </form>
+    </div>
+</div>
+
 <header class="admin-header">
     <div class="admin-brand">
         <div class="admin-logo">CM</div>
-        <div class="admin-title">Requirement Form Submissions</div>
+        <div class="admin-title">Client Requirements Admin</div>
+    </div>
+    <div id="userProfile" style="display: flex; align-items: center; gap: 12px; font-size: 12px;">
+        <span id="userEmailTag" style="color: var(--dev-muted);"></span>
+        <button class="btn-action" id="logoutBtn" style="display: none;">Logout</button>
     </div>
 </header>
 
 <main class="admin-container">
-    <!-- Quick Statistics -->
     <div class="stats-grid">
         <div class="stat-card">
             <span>Total Submissions</span>
@@ -275,12 +263,10 @@ tr:hover td { background: #F8F9FA; }
         </div>
     </div>
 
-    <!-- Filters -->
     <div class="admin-controls">
         <input type="text" id="searchInput" class="search-input" placeholder="Search by company, contact, or Ref ID...">
     </div>
 
-    <!-- Submissions Table -->
     <div class="table-card">
         <table>
             <thead>
@@ -297,7 +283,7 @@ tr:hover td { background: #F8F9FA; }
             <tbody id="submissionsTableBody">
                 <tr>
                     <td colspan="7" style="text-align: center; color: var(--dev-muted); padding: 30px;">
-                        Loading submissions from Firestore...
+                        Authenticating...
                     </td>
                 </tr>
             </tbody>
@@ -315,9 +301,7 @@ tr:hover td { background: #F8F9FA; }
             </div>
             <button class="btn-action" id="closeModalBtn" style="border: none; font-size: 18px;">&times;</button>
         </div>
-        <div class="modal-body" id="modalBody">
-            <!-- Populated Dynamically -->
-        </div>
+        <div class="modal-body" id="modalBody"></div>
         <div class="modal-footer">
             <button type="button" class="btn-action" id="modalDownloadPdfBtn">
                 <i data-lucide="download" width="14" height="14"></i> Download PDF
@@ -328,9 +312,9 @@ tr:hover td { background: #F8F9FA; }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// Initialize Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCXyKSTImIzkYnH2LW408cVWWV1CPvlFbO",
     authDomain: "cmfilings-6a37c.firebaseapp.com",
@@ -342,10 +326,12 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
 let allSubmissions = [];
 let activeItem = null;
+let unsubscribeFirestore = null;
 
 const tbody = document.getElementById("submissionsTableBody");
 const searchInput = document.getElementById("searchInput");
@@ -355,6 +341,45 @@ const modalBody = document.getElementById("modalBody");
 const modalTitle = document.getElementById("modalTitle");
 const modalRef = document.getElementById("modalRef");
 const modalDownloadPdfBtn = document.getElementById("modalDownloadPdfBtn");
+const loginModal = document.getElementById("loginModal");
+const loginForm = document.getElementById("adminLoginForm");
+const loginError = document.getElementById("loginError");
+const userEmailTag = document.getElementById("userEmailTag");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// Auth State Observer
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        loginModal.style.display = "none";
+        userEmailTag.textContent = user.email;
+        logoutBtn.style.display = "inline-flex";
+        initFirestoreListener();
+    } else {
+        loginModal.style.display = "flex";
+        userEmailTag.textContent = "";
+        logoutBtn.style.display = "none";
+        if (unsubscribeFirestore) unsubscribeFirestore();
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--dev-muted); padding: 30px;">Please sign in to view records.</td></tr>`;
+    }
+});
+
+// Handle Login
+loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginError.style.display = "none";
+    const email = document.getElementById("loginEmail").value;
+    const pass = document.getElementById("loginPassword").value;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, pass);
+    } catch (err) {
+        loginError.textContent = err.message;
+        loginError.style.display = "block";
+    }
+});
+
+// Handle Logout
+logoutBtn.addEventListener("click", () => signOut(auth));
 
 // Render Table
 function renderTable(data) {
@@ -388,7 +413,6 @@ function renderTable(data) {
     if (window.lucide) window.lucide.createIcons();
 }
 
-// Update Stats Cards
 function updateStats(data) {
     document.getElementById("statTotal").textContent = data.length;
     document.getElementById("statUrgent").textContent = data.filter(d => d.priorityLevel === 'Urgent').length;
@@ -397,18 +421,20 @@ function updateStats(data) {
     }
 }
 
-// Real-time listener from Firestore
-const q = query(collection(db, "client_requirements"), orderBy("submittedAt", "desc"));
-onSnapshot(q, (snapshot) => {
-    allSubmissions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    updateStats(allSubmissions);
-    renderTable(allSubmissions);
-}, (error) => {
-    console.error("Firestore Listen Error:", error);
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--dev-danger); padding: 20px;">Failed to load data. Verify Firestore read rules.</td></tr>`;
-});
+// Subscribe to Firestore Submissions
+function initFirestoreListener() {
+    const q = query(collection(db, "client_requirements"), orderBy("submittedAt", "desc"));
+    unsubscribeFirestore = onSnapshot(q, (snapshot) => {
+        allSubmissions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        updateStats(allSubmissions);
+        renderTable(allSubmissions);
+    }, (error) => {
+        console.error("Firestore Listen Error:", error);
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--dev-urgent); padding: 20px;">Access denied. Your account does not have admin permissions.</td></tr>`;
+    });
+}
 
-// Search filter
+// Search
 searchInput.addEventListener("input", (e) => {
     const val = e.target.value.toLowerCase().trim();
     const filtered = allSubmissions.filter(s => 
@@ -419,7 +445,7 @@ searchInput.addEventListener("input", (e) => {
     renderTable(filtered);
 });
 
-// Open Details Modal
+// Detail View
 function showDetails(item) {
     activeItem = item;
     modalTitle.textContent = item.companyName || "Company Requirements";
@@ -453,10 +479,10 @@ function showDetails(item) {
             <h4>3. Modules & System Setup</h4>
             <div class="detail-grid">
                 <div class="detail-item full"><span>Modules</span><strong>${item.modules?.join(", ") || 'None selected'}</strong></div>
-                <div class="detail-item full"><span>User Access Roles</span><strong>${item.users?.join(", ") || '—'} (Total Users: ${item.totalUsers || '-'})</strong></div>
+                <div class="detail-item full"><span>User Access Roles</span><strong>${item.users?.join(", ") || '—'} (Total: ${item.totalUsers || '-'})</strong></div>
                 <div class="detail-item full"><span>Admin Features</span><strong>${item.adminFeatures?.join(", ") || '—'}</strong></div>
                 <div class="detail-item full"><span>Client App Features</span><strong>${item.clientFeatures?.join(", ") || '—'}</strong></div>
-                <div class="detail-item full"><span>Integrations Required</span><strong>${item.integrations?.join(", ") || '—'}</strong></div>
+                <div class="detail-item full"><span>Integrations</span><strong>${item.integrations?.join(", ") || '—'}</strong></div>
             </div>
         </div>
 
@@ -475,12 +501,11 @@ function showDetails(item) {
     if (window.lucide) window.lucide.createIcons();
 }
 
-// Generate PDF for Record
 function generateRecordPdf(data) {
-    const PDFLib = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
-    if (!PDFLib) return;
+    const jsPDFConstructor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
+    if (!jsPDFConstructor) return;
 
-    const doc = new PDFLib({ unit: "pt", format: "a4" });
+    const doc = new jsPDFConstructor({ unit: "pt", format: "a4" });
     let y = 40;
     const margin = 40;
 
@@ -542,7 +567,6 @@ function generateRecordPdf(data) {
     printRow("Admin Controls:", data.adminFeatures);
     printRow("Client Features:", data.clientFeatures);
     printRow("Integrations:", data.integrations);
-    printRow("Reports:", data.reports);
     y += 8;
 
     printHeader("4. Design & Target");
@@ -555,7 +579,6 @@ function generateRecordPdf(data) {
     doc.save(`${fileName}_Requirements.pdf`);
 }
 
-// Table Action Events
 tbody.addEventListener("click", (e) => {
     const viewBtn = e.target.closest(".view-btn");
     const pdfBtn = e.target.closest(".pdf-btn");
@@ -577,6 +600,5 @@ modalDownloadPdfBtn.addEventListener("click", () => { if (activeItem) generateRe
 
 if (window.lucide) window.lucide.createIcons();
 </script>
-
 </body>
 </html>
