@@ -15,8 +15,8 @@
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
 
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<!-- Replace jsPDF CDN -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <style>
 :root{
@@ -1431,11 +1431,25 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
-    // PDF Generator
+        // Robust PDF Generator
     downloadPdfBtn.addEventListener("click", () => {
-        if (!savedFormData) return;
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ unit: "pt", format: "a4" });
+        if (!savedFormData) {
+            alert("No saved form data available.");
+            return;
+        }
+
+        // Universal resolver for jsPDF
+        const jsPDFConstructor = 
+            (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF :
+            (typeof window.jsPDF === "function") ? window.jsPDF :
+            (window.jspdf && typeof window.jspdf === "function") ? window.jspdf : null;
+
+        if (!jsPDFConstructor) {
+            alert("PDF engine failed to load. Please make sure you are connected to the internet or hosting via a web server (http://).");
+            return;
+        }
+
+        const doc = new jsPDFConstructor({ unit: "pt", format: "a4" });
         const data = savedFormData;
 
         let y = 40;
@@ -1478,7 +1492,7 @@ document.addEventListener("DOMContentLoaded", () => {
             y += (splitVal.length * 12) + 4;
         }
 
-        // Header Title
+        // Title Header
         doc.setFont("helvetica", "bold");
         doc.setFontSize(16);
         doc.setTextColor(22, 38, 63);
@@ -1489,7 +1503,7 @@ document.addEventListener("DOMContentLoaded", () => {
         doc.text(`App Requirement Document · Ref ID: ${data.referenceId}`, margin, y);
         y += 22;
 
-        // Sections
+        // 1. Business
         printHeader("1. Business & Contact Information");
         printRow("Company Name:", data.companyName);
         printRow("Business Type:", data.businessType);
@@ -1502,17 +1516,19 @@ document.addEventListener("DOMContentLoaded", () => {
         printRow("Description:", data.businessDescription);
         y += 8;
 
+        // 2. Workflow
         printHeader("2. Workflow & Automation");
         printRow("Current Process:", data.currentWorkflow);
         printRow("Existing Problems:", data.problems);
         printRow("To Automate:", data.automation);
         printRow("Current Tools:", data.currentSoftware);
         printRow("Data Source:", data.dataSource);
-        if (data.workflowSteps.length > 0) {
+        if (data.workflowSteps && data.workflowSteps.length > 0) {
             printRow("Workflow Steps:", data.workflowSteps.map((s, i) => `${i + 1}. ${s}`).join("  |  "));
         }
         y += 8;
 
+        // 3. Modules
         printHeader("3. Application Modules & Permissions");
         printRow("Selected Modules:", data.modules);
         printRow("Other Modules:", data.otherModules);
@@ -1522,6 +1538,7 @@ document.addEventListener("DOMContentLoaded", () => {
         printRow("Client Features:", data.clientFeatures);
         y += 8;
 
+        // 4. Tracking
         printHeader("4. Tracking, Integrations & Reports");
         printRow("Who Assigns Work:", data.workAssigner);
         printRow("Tracking Details:", data.trackingRequirements);
@@ -1529,6 +1546,7 @@ document.addEventListener("DOMContentLoaded", () => {
         printRow("Reports Needed:", data.reports);
         y += 8;
 
+        // 5. Design
         printHeader("5. Design & Final Preferences");
         printRow("Colours (Primary / Sec):", `${data.primaryColor} / ${data.secondaryColor}`);
         printRow("Theme & Font:", `${data.themePreference} | ${data.fontPreference}`);
@@ -1537,11 +1555,10 @@ document.addEventListener("DOMContentLoaded", () => {
         printRow("Project Priority:", data.priorityLevel);
         printRow("Extra Notes:", data.additionalRequirements);
 
-        doc.save(`${(data.companyName || "App").replace(/[^a-z0-9]/gi, '_')}_Requirements.pdf`);
+        const fileName = (data.companyName || "App").replace(/[^a-z0-9]/gi, '_');
+        doc.save(`${fileName}_Requirements.pdf`);
     });
 
-    updateStep(0);
-});
 </script>
 
 </body>
