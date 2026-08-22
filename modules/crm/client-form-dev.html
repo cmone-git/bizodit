@@ -3,6 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  
+  <!-- Favicon & App Icons -->
+  <link rel="icon" type="image/png" href="../../assets/logo.png">
+  <link rel="apple-touch-icon" href="../../assets/logo.png">
+  
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="../../css/cm.css">
   <link rel="stylesheet" href="../../css/responsive.css">
   
@@ -15,6 +21,19 @@
   <title>BIZODIT — Client Requirements</title>
 
   <style>
+    .cm-brand-logo-img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .cm-brand-name-img {
+      height: 20px;
+      object-fit: contain;
+      object-position: left center;
+      display: block;
+    }
+
     .data-table {
       width: 100%;
       border-collapse: collapse;
@@ -181,7 +200,10 @@
   <!-- Login Modal -->
   <div class="cm-login-modal" id="loginModal">
     <div class="cm-login-card">
-      <h2 style="font-size: 18px; margin-bottom: 4px; color: #16263F;">Admin Authentication</h2>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+        <img src="../../assets/logo.png" style="width:28px; height:28px; object-fit:contain;" alt="Logo" onerror="this.style.display='none'">
+        <h2 style="font-size: 17px; color: #16263F; margin:0;">Admin Authentication</h2>
+      </div>
       <p style="font-size: 12px; color: #707985; margin-bottom: 18px;">Sign in to manage client requirements.</p>
       
       <div id="authAlert" class="auth-alert"></div>
@@ -220,9 +242,9 @@
       <div class="cm-header-left">
         <button class="menu-toggle" id="menuToggle"><i data-lucide="menu"></i></button>
         <div class="cm-brand">
-          <div class="cm-logo">CM</div>
+          <img src="../../assets/logo.png" class="cm-brand-logo-img" id="headerBrandLogo" alt="CM" onerror="this.outerHTML='<div class=\'cm-logo\'>CM</div>'">
           <div>
-            <div class="cm-brand-title">CM | BIZODIT</div>
+            <img src="../../assets/name.png" class="cm-brand-name-img" id="headerBrandName" alt="BIZODIT" onerror="this.outerHTML='<div class=\'cm-brand-title\'>CM | BIZODIT</div>'">
             <div class="cm-brand-subtitle">Business Management</div>
           </div>
         </div>
@@ -449,6 +471,23 @@
     const modalTitle = document.getElementById("modalTitle");
     const modalRef = document.getElementById("modalRef");
     const modalDownloadPdfBtn = document.getElementById("modalDownloadPdfBtn");
+
+    async function getBase64Image(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.naturalWidth || img.width;
+          canvas.height = img.naturalHeight || img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          resolve(canvas.toDataURL("image/png"));
+        };
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
 
     function showAuthAlert(msg, type = "error") {
       authAlert.textContent = msg;
@@ -688,13 +727,39 @@
       if (window.lucide) window.lucide.createIcons();
     }
 
-    function generateRecordPdf(data) {
+    async function generateRecordPdf(data) {
       const jsPDFConstructor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
       if (!jsPDFConstructor) return;
 
       const doc = new jsPDFConstructor({ unit: "pt", format: "a4" });
-      let y = 40;
+      let y = 35;
       const margin = 40;
+
+      const logoBase64 = await getBase64Image("../../assets/logo.png");
+      const nameBase64 = await getBase64Image("../../assets/name.png");
+
+      if (logoBase64) {
+        try {
+          doc.addImage(logoBase64, "PNG", margin, y, 30, 30);
+        } catch(e) {}
+      }
+      if (nameBase64) {
+        try {
+          doc.addImage(nameBase64, "PNG", margin + 38, y + 4, 100, 22);
+        } catch(e) {}
+      } else {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(22, 38, 63);
+        doc.text("CM DEVELOPERS", margin + 38, y + 20);
+      }
+
+      y += 42;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(112, 121, 133);
+      doc.text(`App Requirement Document · Ref ID: ${data.referenceId || 'N/A'}`, margin, y);
+      y += 18;
 
       function printHeader(title) {
         doc.setFont("helvetica", "bold");
@@ -722,16 +787,6 @@
         doc.text(splitVal, margin + 130, y);
         y += (splitVal.length * 12) + 4;
       }
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.setTextColor(22, 38, 63);
-      doc.text("CM DEVELOPERS", margin, y);
-      y += 16;
-      doc.setFontSize(9.5);
-      doc.setTextColor(112, 121, 133);
-      doc.text(`App Requirement Document · Ref ID: ${data.referenceId || 'N/A'}`, margin, y);
-      y += 22;
 
       printHeader("1. Business & Contact Information");
       printRow("Company Name:", data.companyName);
