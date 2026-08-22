@@ -272,7 +272,7 @@ body.client-form-page{
     box-shadow:0 0 0 3px rgba(22,38,63,.06);
 }
 
-/* Option Grids */
+/* Card Option Grids */
 .client-option-grid {
     display: grid !important;
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -661,9 +661,9 @@ label.client-choice:has(input:checked) {
 
 <header class="client-form-header">
     <div class="client-brand">
-        <img class="client-brand-logo" src="assets/logo.png" alt="CM Developers" onerror="this.style.display='none'">
+        <img class="client-brand-logo" id="headerLogoImg" src="assets/logo.png" alt="CM Developers" onerror="this.style.display='none'">
         <div>
-            <img class="client-brand-name" src="assets/name.png" alt="CM Developers" onerror="this.style.display='none'">
+            <img class="client-brand-name" id="headerNameImg" src="assets/name.png" alt="CM Developers" onerror="this.style.display='none'">
             <div class="client-brand-subtitle">App Requirement & Business Workflow</div>
         </div>
     </div>
@@ -1152,7 +1152,7 @@ label.client-choice:has(input:checked) {
         <p>Your application requirements have been successfully submitted to <strong>CM Developers</strong>.</p>
         <div class="client-reference">
             <span>Submission ID</span>
-            <strong id="referenceId">Dev/000000/4001</strong>
+            <strong id="referenceId">Loading...</strong>
         </div>
         <div class="client-success-actions">
             <button type="button" class="client-btn client-btn-success" id="downloadPdfBtn">
@@ -1172,7 +1172,7 @@ label.client-choice:has(input:checked) {
 <!-- FIREBASE INTEGRATION & FORM LOGIC -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { getFirestore, doc, collection, setDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCXyKSTImIzkYnH2LW408cVWWV1CPvlFbO",
@@ -1186,6 +1186,24 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// Helper: Convert image URL or DOM image to base64 for jsPDF
+async function getBase64Image(imgElementOrUrl) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.naturalWidth || img.width;
+            canvas.height = img.naturalHeight || img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL("image/png"));
+        };
+        img.onerror = () => resolve(null);
+        img.src = typeof imgElementOrUrl === "string" ? imgElementOrUrl : imgElementOrUrl.src;
+    });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
@@ -1289,11 +1307,34 @@ document.addEventListener("DOMContentLoaded", () => {
         nextBtn.innerHTML = `Submitting...`;
 
         const rawData = new FormData(form);
-        const randomCode = Math.floor(100000 + Math.random() * 900000);
-        const generatedRefId = `Dev/${randomCode}/4001`;
+
+        let finalRefId = "";
+        const counterRef = doc(db, "counters", "submissions");
+
+        try {
+            // Atomic sequential generation (4001, 4002, 4003...)
+            const nextSeq = await runTransaction(db, async (transaction) => {
+                const counterDoc = await transaction.get(counterRef);
+                let currentSeq = 4000;
+                if (counterDoc.exists()) {
+                    currentSeq = counterDoc.data().currentSequence || 4000;
+                }
+                const newSeq = currentSeq + 1;
+                transaction.set(counterRef, { currentSequence: newSeq }, { merge: true });
+                return newSeq;
+            });
+
+            const randomCode = Math.floor(100000 + Math.random() * 900000);
+            finalRefId = `Dev/${randomCode}/${nextSeq}`;
+        } catch (error) {
+            console.warn("Counter sequence fallback:", error);
+            const fallbackSeq = 4000 + Math.floor(Math.random() * 1000);
+            const randomCode = Math.floor(100000 + Math.random() * 900000);
+            finalRefId = `Dev/${randomCode}/${fallbackSeq}`;
+        }
 
         const dataObj = {
-            referenceId: generatedRefId,
+            referenceId: finalRefId,
             submittedAt: serverTimestamp(),
             companyName: rawData.get("companyName") || "",
             businessType: rawData.get("businessType") || "",
@@ -1354,13 +1395,14 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-            await addDoc(collection(db, "client_requirements"), dataObj);
+            const reqDocRef = doc(collection(db, "client_requirements"));
+            await setDoc(reqDocRef, dataObj);
         } catch (error) {
-            console.error("Firestore Error (saved locally as fallback):", error);
+            console.error("Firestore Write Error:", error);
         }
 
         savedFormData = dataObj;
-        document.getElementById("referenceId").textContent = generatedRefId;
+        document.getElementById("referenceId").textContent = finalRefId;
         form.style.display = "none";
         document.querySelector(".client-progress").style.display = "none";
         document.querySelector(".client-intro").style.display = "none";
@@ -1441,8 +1483,8 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
-    // Universal Safe PDF Generator
-    downloadPdfBtn.addEventListener("click", () => {
+    // Universal Safe PDF Generator with Branding
+    downloadPdfBtn.addEventListener("click", async () => {
         if (!savedFormData) {
             alert("No saved form data available.");
             return;
@@ -1454,16 +1496,48 @@ document.addEventListener("DOMContentLoaded", () => {
             (window.jspdf && typeof window.jspdf === "function") ? window.jspdf : null;
 
         if (!jsPDFConstructor) {
-            alert("PDF library failed to load. Please make sure you are connected to the internet and access via https://.");
+            alert("PDF library failed to load. Please make sure you are connected to the internet.");
             return;
         }
 
         const doc = new jsPDFConstructor({ unit: "pt", format: "a4" });
         const data = savedFormData;
 
-        let y = 40;
+        let y = 35;
         const margin = 40;
         const pageHeight = doc.internal.pageSize.height;
+
+        // Fetch Base64 images from header
+        const logoData = await getBase64Image(document.getElementById("headerLogoImg") || "assets/logo.png");
+        const nameData = await getBase64Image(document.getElementById("headerNameImg") || "assets/name.png");
+
+        // Render Linked Logo + Name
+        if (logoData) {
+            try {
+                doc.addImage(logoData, "PNG", margin, y, 32, 32);
+            } catch (e) {
+                console.warn("Logo image embed error", e);
+            }
+        }
+        if (nameData) {
+            try {
+                doc.addImage(nameData, "PNG", margin + 40, y + 4, 100, 22);
+            } catch (e) {
+                console.warn("Name image embed error", e);
+            }
+        } else {
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.setTextColor(22, 38, 63);
+            doc.text("CM DEVELOPERS", margin + 40, y + 20);
+        }
+
+        y += 42;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9.5);
+        doc.setTextColor(112, 121, 133);
+        doc.text(`App Requirement Document · Ref ID: ${data.referenceId}`, margin, y);
+        y += 18;
 
         function checkPageBreak(spaceNeeded = 30) {
             if (y + spaceNeeded >= pageHeight - margin) {
@@ -1500,17 +1574,6 @@ document.addEventListener("DOMContentLoaded", () => {
             doc.text(splitVal, margin + 130, y);
             y += (splitVal.length * 12) + 4;
         }
-
-        // Title Header
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(16);
-        doc.setTextColor(22, 38, 63);
-        doc.text("CM DEVELOPERS", margin, y);
-        y += 16;
-        doc.setFontSize(9.5);
-        doc.setTextColor(112, 121, 133);
-        doc.text(`App Requirement Document · Ref ID: ${data.referenceId}`, margin, y);
-        y += 22;
 
         printHeader("1. Business & Contact Information");
         printRow("Company Name:", data.companyName);
@@ -1564,7 +1627,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     updateStep(0);
-}); // <-- Correctly closes DOMContentLoaded
+});
 </script>
 
 </body>
